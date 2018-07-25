@@ -34,25 +34,28 @@ public class PlaceBlocks : MonoBehaviour {
         this.manager = manager;
     }
 
+    public void SetSelectedPiece(BasePiece piece) {
+        if (piece != null && piece.id == entrance_piece.id) {
+            placing_entrance = true;
+            placing_exit = false;
+        } else if (piece != null && piece.id == exit_piece.id) {
+            placing_exit = true;
+            placing_entrance = false;
+        } else {
+            placing_entrance = false;
+            placing_exit = false;
+        }
+
+        SelectPiece(piece);
+    }
+
     void Update() {
         if (!active) {
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) {
-            SetSelectedPiece(border_piece);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2)) {
-            SetSelectedPiece(entrance_piece);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3)) {
-            SetSelectedPiece(exit_piece);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4)) {
-            SetSelectedPiece(wall_mount);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha5)) {
-            SetSelectedPiece(trigger);
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            SetSelectedPiece(null);
         }
         if (Input.GetKeyDown(KeyCode.R)) {
             if (selected_piece != null) {
@@ -117,20 +120,5 @@ public class PlaceBlocks : MonoBehaviour {
             selected_piece = Instantiate(piece);
             selected_piece.Init(true);
         }
-    }
-
-    void SetSelectedPiece(BasePiece piece) {
-        if (piece != null && piece.id == entrance_piece.id) {
-            placing_entrance = true;
-            placing_exit = false;
-        } else if (piece != null && piece.id == exit_piece.id) {
-            placing_exit = true;
-            placing_entrance = false;
-        } else {
-            placing_entrance = false;
-            placing_exit = false;
-        }
-
-        SelectPiece(piece);
     }
 }

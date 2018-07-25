@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
-[RequireComponent(typeof(PlaceBlocks), typeof(LinkTraps), typeof(PlaceEnemies))]
+[RequireComponent(typeof(PlaceBlocks), typeof(LinkTraps), typeof(PlaceEnemies))] // Require Build Modes
+[RequireComponent(typeof(BaseBuildInventoryTracker))]                            // Require Inventory Tracker
 public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
 
     public enum BuildMode { View, PlaceBlocks, Link, PlaceEnemies }
@@ -26,11 +28,17 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
 
     public int block_size { get { return _block_size; } }
 
+    public PlaceBlocks place_blocks {
+        get { return _place_blocks;  }
+    }
+
     [SerializeField] Vector2Int size;
     [SerializeField][Range(1, 10)] int _block_size = 1;
     [SerializeField] int exit_id, entrance_id;
 
     [SerializeField] BasePiece border_piece;
+
+    UnityEvent map_changed_event;
 
     Dictionary<Vector2Int, BasePiece> point_to_piece;
     Dictionary<BasePiece, Vector2Int> piece_to_anchor;
@@ -45,13 +53,15 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
 
     BuildMode current_build_mode;
 
-    PlaceBlocks place_blocks;
+    PlaceBlocks _place_blocks;
     LinkTraps link;
     PlaceEnemies place_enemies;
 
+    BaseBuildInventoryTracker inventory_tracker;
+
     public void SwitchMode(BuildMode mode) {
         if (current_build_mode == BuildMode.PlaceBlocks) {
-            place_blocks.Deactivate();
+            _place_blocks.Deactivate();
         } else if (current_build_mode == BuildMode.Link) {
             link.Deactivate();
         } else if (current_build_mode == BuildMode.PlaceEnemies) {
@@ -59,7 +69,7 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         }
         current_build_mode = mode;
         if (current_build_mode == BuildMode.PlaceBlocks) {
-            place_blocks.Activate();
+            _place_blocks.Activate();
         } else if (current_build_mode == BuildMode.Link) {
             link.Activate();
         } else if (current_build_mode == BuildMode.PlaceEnemies) {
@@ -67,11 +77,8 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         }
     }
 
-    public void SetSelectedEnemyGroup(EnemyGroup group) {
-        if (current_build_mode != BuildMode.PlaceEnemies) {
-            return;
-        }
-        SelectGroup(group);
+    public void AddMapChangedListener(UnityAction action) {
+        map_changed_event.AddListener(action);
     }
 
     public BaseData Save() {
@@ -137,7 +144,7 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
     }
 
     public bool TryPlacePiece(BasePiece selected_piece, Vector2Int position, Facing facing) {
-        if (selected_piece == null || !CanBePlaced(selected_piece, position, facing)) {
+        if (selected_piece == null || !CanBePlaced(selected_piece, position, facing) || !inventory_tracker.CanPlacePiece(selected_piece.id)) {
             return false;
         }
 
@@ -164,7 +171,7 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
     }
 
     public bool TryPlaceEnemy(EnemyGroup selected_group, Vector2Int position, Facing facing) {
-        if (selected_group == null || !SpaceAvailable(selected_group, position, facing)) {
+        if (selected_group == null || !SpaceAvailable(selected_group, position, facing) || !inventory_tracker.CanPlaceGroup(selected_group.id)) {
             return false;
         }
 
@@ -211,7 +218,7 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
                 return false;
             }
         }
-        return SpaceAvailable(piece, position, facing);
+        return SpaceAvailable(piece, position, facing) && inventory_tracker.CanPlacePiece(piece.id);
     }
 
     public bool InBounds(Vector2Int placement) {
@@ -255,9 +262,9 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
 
         current_facing = Facing.up;
 
-        place_blocks = GetComponent<PlaceBlocks>();
-        place_blocks.SetManager(this);
-        place_blocks.Deactivate();
+        _place_blocks = GetComponent<PlaceBlocks>();
+        _place_blocks.SetManager(this);
+        _place_blocks.Deactivate();
 
         link = GetComponent<LinkTraps>();
         link.SetManager(this);
@@ -266,6 +273,10 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         place_enemies = GetComponent<PlaceEnemies>();
         place_enemies.SetManager(this);
         place_enemies.Deactivate();
+
+        inventory_tracker = GetComponent<BaseBuildInventoryTracker>();
+
+        map_changed_event = new UnityEvent();
     }
 
     void OnGUI() {
@@ -277,6 +288,7 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         if (!Load(data)) {
             CreateBorderWall();
         }
+        SwitchMode(BuildMode.PlaceBlocks);
     }
 
     void CreateBorderWall() {
@@ -314,6 +326,9 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         new_piece.transform.position = (position.ToVector3Int(Vector3Axis.y) - new Vector3Int(new_piece.anchor.x, 0, new_piece.anchor.y)) * block_size;
         new_piece.transform.rotation = Quaternion.Euler(Vector3.up * (int)facing);
 
+        if (InBounds(position)) {
+            inventory_tracker.NotePiecePlacement(piece.id);
+        }
         if (piece.must_be_mounted) {
             Vector2Int adjacent_position = GetAdjacentPosition(position, facing);
             if (mount_to_mounted.ContainsKey(adjacent_position)) {
@@ -343,11 +358,15 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         piece_to_anchor.Add(new_piece, position);
 
         new_piece.editor.SetViewMode(BasePieceEditor.ViewMode.Normal);
+        map_changed_event.Invoke();
     }
 
     void DeletePiece(Vector2Int position) {
         BasePiece piece = point_to_piece[position];
 
+        if (InBounds(position)) {
+            inventory_tracker.NotePieceRemoval(piece.id);
+        }
         // If piece is mounted on wall remove it from dicitonary noting wall mounts
         if (piece.must_be_mounted) {
             Vector2Int adjacent_position = GetAdjacentPosition(position, piece.facing);
@@ -385,6 +404,7 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         piece_to_anchor.Remove(piece);
 
         Destroy(piece.gameObject);
+        map_changed_event.Invoke();
     }
 
     void PlaceEnemy(EnemyGroup enemy, Vector2Int position, Facing facing) {
@@ -394,16 +414,25 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         new_enemy.transform.position = (position.ToVector3Int(Vector3Axis.y) - new Vector3Int(new_enemy.anchor.x, 0, new_enemy.anchor.y)) * block_size;
         new_enemy.transform.rotation = Quaternion.Euler(Vector3.up * (int)facing);
 
+        if (InBounds(position)) {
+            inventory_tracker.NoteGroupPlacement(enemy.id);
+        }
+
         for (int x = 0; x < new_enemy.size.x; x++) {
             for (int y = 0; y < new_enemy.size.y; y++) {
                 point_to_enemy_group.Add(GetRotatedPosition(enemy.anchor, new Vector2Int(x, y), facing) + position, new_enemy);
             }
         }
         enemy_group_to_anchor.Add(new_enemy, position);
+        map_changed_event.Invoke();
     }
 
     void DeleteEnemy(Vector2Int position) {
         EnemyGroup group = point_to_enemy_group[position];
+
+        if (InBounds(position)) {
+            inventory_tracker.NoteGroupRemoval(group.id);
+        }
 
         for (int x = 0; x < group.size.x; x++) {
             for (int y = 0; y < group.size.y; y++) {
@@ -413,6 +442,7 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         enemy_group_to_anchor.Remove(group);
 
         Destroy(group.gameObject);
+        map_changed_event.Invoke();
     }
 
     bool SpaceAvailable(BasePiece piece, Vector2Int placement, Facing facing) {

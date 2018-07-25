@@ -4,8 +4,16 @@ using UnityEngine;
 
 public class BaseBuildInventoryTracker : MonoBehaviour {
 
-    [SerializeField] BaseInventory tracked_inventory;
-    bool tracking;
+    public BaseInventory tracked_inventory {
+        get { return _tracked_inventory; }
+    }
+    public bool tracking {
+        get { return _tracked_inventory != null && !use_max_inventory; }
+    }
+
+    [SerializeField] BaseInventory _tracked_inventory;
+    [SerializeField] bool use_max_inventory;
+
 
     int[] placed_pieces;
     int[] placed_groups;
@@ -15,12 +23,11 @@ public class BaseBuildInventoryTracker : MonoBehaviour {
     }
 
     public void SetTrackedInventory(BaseInventory inventory) {
-        tracked_inventory = inventory;
-        tracking = tracked_inventory != null;
+        _tracked_inventory = inventory;
 
         if (tracking) {
-            placed_pieces = new int[inventory.max_base_piece_id + 1];
-            placed_groups = new int[inventory.max_enemy_group_id + 1];
+            placed_pieces = new int[Database.base_pieces.max_id + 1];
+            placed_groups = new int[Database.enemy_groups.max_id + 1];
         }
     }
 

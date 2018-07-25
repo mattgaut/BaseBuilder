@@ -49,6 +49,13 @@ public class PlaceBlocks : MonoBehaviour {
         SelectPiece(piece);
     }
 
+    public void SetSelectedToEntrancePiece() {
+        SetSelectedPiece(entrance_piece);
+    }
+    public void SetSelectedToExitPiece() {
+        SetSelectedPiece(exit_piece);
+    }
+
     void Update() {
         if (!active) {
             return;
@@ -73,39 +80,42 @@ public class PlaceBlocks : MonoBehaviour {
                 SetPlacementHighlight(manager.CanBePlaced(selected_piece, mouse_position, current_facing));
             }
         }
-        if (placing_entrance) {
-            if (Input.GetMouseButtonDown(0)) {
-                if (manager.OnBounds(mouse_position)) {
-                    if (manager.entrance_position != Vector2Int.zero) manager.ReplacePiece(manager.entrance_position, border_piece);
-                    manager.ReplacePiece(mouse_position, entrance_piece, manager.GetBoundaryFacing(mouse_position));
-                    SetSelectedPiece(null);
-                    placing_entrance = false;
+        if (!manager.mouse_over_ui) {
+            if (placing_entrance) {
+                if (Input.GetMouseButtonDown(0)) {
+                    if (manager.OnBounds(mouse_position)) {
+                        if (manager.entrance_position != Vector2Int.zero) manager.ReplacePiece(manager.entrance_position, border_piece);
+                        manager.ReplacePiece(mouse_position, entrance_piece, manager.GetBoundaryFacing(mouse_position));
+                        SetSelectedPiece(null);
+                        placing_entrance = false;
+                        manager.ValidateMap();
+                    }
+                }
+            } else if (placing_exit) {
+                if (Input.GetMouseButtonDown(0)) {
+                    if (manager.OnBounds(mouse_position)) {
+                        if (manager.exit_position != Vector2Int.zero) manager.ReplacePiece(manager.exit_position, border_piece);
+                        manager.ReplacePiece(mouse_position, exit_piece, manager.GetBoundaryFacing(mouse_position));
+                        SetSelectedPiece(null);
+                        placing_exit = false;
+                        manager.ValidateMap();
+                    }
+                }
+            } else {
+                if (Input.GetMouseButtonDown(0)) {
+                    if (manager.TryPlacePiece(selected_piece, mouse_position, current_facing)) {
+                        manager.ValidateMap();
+                        manager.SetRotation(0);
+                        selected_piece.transform.rotation = Quaternion.Euler(0, (int)current_facing, 0);
+                    }
+                }
+                if (Input.GetMouseButtonDown(1)) {
+                    manager.TryDeletePiece(mouse_position);
                     manager.ValidateMap();
                 }
-            }
-        } else if (placing_exit) {
-            if (Input.GetMouseButtonDown(0)) {
-                if (manager.OnBounds(mouse_position)) {
-                    if (manager.exit_position != Vector2Int.zero) manager.ReplacePiece(manager.exit_position, border_piece);
-                    manager.ReplacePiece(mouse_position, exit_piece, manager.GetBoundaryFacing(mouse_position));
-                    SetSelectedPiece(null);
-                    placing_exit = false;
-                    manager.ValidateMap();
-                }
-            }
-        } else {
-            if (Input.GetMouseButtonDown(0)) {
-                if (manager.TryPlacePiece(selected_piece, mouse_position, current_facing)) {
-                    manager.ValidateMap();
-                    manager.SetRotation(0);
-                    selected_piece.transform.rotation = Quaternion.Euler(0, (int)current_facing, 0);
-                }
-            }
-            if (Input.GetMouseButtonDown(1)) {
-                manager.TryDeletePiece(mouse_position);
-                manager.ValidateMap();
             }
         }
+
     }
 
     void SetPlacementHighlight(bool can_place) {

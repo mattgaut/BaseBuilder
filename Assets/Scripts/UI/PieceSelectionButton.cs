@@ -39,4 +39,8 @@ public class PieceSelectionButton : MonoBehaviour {
     [SerializeField] Image image;
     [SerializeField] Text _title, _description, _count_text;
     int _count, _count_max;
+
+    public void ShowCount(bool enabled) {
+        _count_text.enabled = enabled;
+    }
 }

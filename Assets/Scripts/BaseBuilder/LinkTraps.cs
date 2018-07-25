@@ -34,13 +34,47 @@ public class LinkTraps : MonoBehaviour {
         this.manager = manager;
     }
 
+    public void SetLinkHighlight(TriggerableBasePiece to_highlight) {
+        ClearLinkHighlight();
+        triggerable_highlight = to_highlight;
+        triggerable_highlight.editor.SetViewMode(BasePieceEditor.ViewMode.Highlight);
+        if (triggerable_to_trigger.ContainsKey(to_highlight)) {
+            trigger_highlight = triggerable_to_trigger[to_highlight];
+            trigger_highlight.editor.SetViewMode(BasePieceEditor.ViewMode.Highlight);
+        }
+    }
+    public void SetLinkHighlight(TriggerBasePiece to_highlight) {
+        ClearLinkHighlight();
+        trigger_highlight = to_highlight;
+        trigger_highlight.editor.SetViewMode(BasePieceEditor.ViewMode.Highlight);
+        if (trigger_to_triggerable.ContainsKey(to_highlight)) {
+            triggerable_highlight = trigger_to_triggerable[to_highlight];
+            triggerable_highlight.editor.SetViewMode(BasePieceEditor.ViewMode.Highlight);
+        }
+    }
+
+    public void ClearLinkHighlight() {
+        if (triggerable_highlight != null) {
+            triggerable_highlight.editor.SetNormal();
+        }
+        if (trigger_highlight != null) {
+            trigger_highlight.editor.SetNormal();
+        }
+        trigger_highlight = null;
+        triggerable_highlight = null;
+    }
+
     void Update() {
         if (!active) {
             return;
         }
 
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            ClearToLink();
+        }
+
         if (to_link_trigger != null) {
-            if (Input.GetMouseButtonDown(0)) {
+            if (Input.GetMouseButtonDown(0) && !manager.mouse_over_ui) {
                 if (triggerables.ContainsKey(mouse_position)) {
                     SetToLinkTriggeable(triggerables[mouse_position]);
                     manager.CreateLink(to_link_trigger, to_link_triggerable);
@@ -54,7 +88,7 @@ public class LinkTraps : MonoBehaviour {
                 }
             }
         } else if (to_link_triggerable != null) {
-            if (Input.GetMouseButtonDown(0)) {
+            if (Input.GetMouseButtonDown(0) && !manager.mouse_over_ui) {
                 if (triggers.ContainsKey(mouse_position)) {
                     SetToLinkTrigger(triggers[mouse_position]);
                     manager.CreateLink(to_link_trigger, to_link_triggerable);
@@ -68,7 +102,7 @@ public class LinkTraps : MonoBehaviour {
                 }
             }
         } else {
-            if (Input.GetMouseButtonDown(0)) {
+            if (Input.GetMouseButtonDown(0) && !manager.mouse_over_ui) {
                 if (triggers.ContainsKey(mouse_position)) {
                     ClearLinkHighlight();
                     SetToLinkTrigger(triggers[mouse_position]);
@@ -76,7 +110,7 @@ public class LinkTraps : MonoBehaviour {
                     ClearLinkHighlight();
                     SetToLinkTriggeable(triggerables[mouse_position]);
                 }
-            } else if (Input.GetMouseButtonDown(1)) {
+            } else if (Input.GetMouseButtonDown(1) && !manager.mouse_over_ui) {
                 if (triggers.ContainsKey(mouse_position) && trigger_to_triggerable.ContainsKey(triggers[mouse_position])) {
                     ClearLinkHighlight();
                     manager.DeleteLink(triggers[mouse_position], trigger_to_triggerable[triggers[mouse_position]]);
@@ -117,35 +151,5 @@ public class LinkTraps : MonoBehaviour {
         if (to_link_triggerable != null) to_link_triggerable.editor.SetNormal();
         to_link_trigger = null;
         to_link_triggerable = null;
-    }
-
-    void SetLinkHighlight(TriggerableBasePiece to_highlight) {
-        ClearLinkHighlight();
-        triggerable_highlight = to_highlight;
-        triggerable_highlight.editor.SetViewMode(BasePieceEditor.ViewMode.Highlight);
-        if (triggerable_to_trigger.ContainsKey(to_highlight)) {
-            trigger_highlight = triggerable_to_trigger[to_highlight];
-            trigger_highlight.editor.SetViewMode(BasePieceEditor.ViewMode.Highlight);
-        }
-    }
-    void SetLinkHighlight(TriggerBasePiece to_highlight) {
-        ClearLinkHighlight();
-        trigger_highlight = to_highlight;
-        trigger_highlight.editor.SetViewMode(BasePieceEditor.ViewMode.Highlight);
-        if (trigger_to_triggerable.ContainsKey(to_highlight)) {
-            triggerable_highlight = trigger_to_triggerable[to_highlight];
-            triggerable_highlight.editor.SetViewMode(BasePieceEditor.ViewMode.Highlight);
-        }
-    }
-
-    void ClearLinkHighlight() {
-        if (triggerable_highlight != null) {
-            triggerable_highlight.editor.SetNormal();
-        }
-        if (trigger_highlight != null) {
-            trigger_highlight.editor.SetNormal();
-        }
-        trigger_highlight = null;
-        triggerable_highlight = null;
     }
 }

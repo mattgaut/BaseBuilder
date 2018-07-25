@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PlaceEnemies : MonoBehaviour {
 
-    [SerializeField] EnemyGroup one, two, three;
-
     BaseBuildManager manager;
     bool active;
 
@@ -29,19 +27,22 @@ public class PlaceEnemies : MonoBehaviour {
         this.manager = manager;
     }
 
+    public void SetSelectedGroup(EnemyGroup group) {
+        if (selected_group != null) {
+            Destroy(selected_group.gameObject);
+        }
+        if (group != null) {
+            selected_group = Instantiate(group);
+        }
+    }
+
     void Update() {
         if (!active) {
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) {
-            SetSelectedGroup(one);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2)) {
-            SetSelectedGroup(two);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3)) {
-            SetSelectedGroup(three);
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            SetSelectedGroup(null);
         }
         if (Input.GetKeyDown(KeyCode.R)) {
             if (selected_group != null) {
@@ -54,25 +55,16 @@ public class PlaceEnemies : MonoBehaviour {
         if (selected_group != null) {
             selected_group.transform.position = mouse_position.ToVector3Int(Vector3Axis.y) * manager.block_size;
         }
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(0) && !manager.mouse_over_ui) {
             if (manager.TryPlaceEnemy(selected_group, mouse_position, current_facing)) {
                 manager.ValidateMap();
                 manager.SetRotation(0);
                 selected_group.transform.rotation = Quaternion.Euler(0, (int)current_facing, 0);
             }
         }
-        if (Input.GetMouseButtonDown(1)) {
+        if (Input.GetMouseButtonDown(1) && !manager.mouse_over_ui) {
             manager.TryDeleteEnemy(mouse_position);
             manager.ValidateMap();
-        }
-    }
-
-    void SetSelectedGroup(EnemyGroup group) {
-        if (selected_group != null) {
-            Destroy(selected_group.gameObject);
-        }
-        if (group != null) {
-            selected_group = Instantiate(group);
         }
     }
 }

@@ -14,6 +14,25 @@ public class BaseInventory : MonoBehaviour {
     [SerializeField] int[] base_pieces;
     [SerializeField] int[] enemy_groups;
 
+    public void InitializeInventory(int max_piece_id, int max_group_id) {
+        base_pieces = new int[max_piece_id + 1];
+        enemy_groups = new int[max_group_id + 1];
+    }
+
+    public void UpdateInventory(int max_piece_id, int max_group_id) {
+        int[] new_base_pieces = new int[max_piece_id + 1];
+        int[] new_enemy_groups = new int[max_group_id + 1];
+
+        for (int i = 0; i <= max_piece_id && i < base_pieces.Length; i++) {
+            new_base_pieces[i] = base_pieces[i];
+        }
+        for (int i = 0; i <= max_group_id && i < enemy_groups.Length; i++) {
+            new_enemy_groups[i] = enemy_groups[i];
+        }
+        base_pieces = new_base_pieces;
+        enemy_groups = new_enemy_groups;
+    }
+
     public int GetBasePieceCount(int piece_id) {
         if (piece_id < base_pieces.Length) {
             return base_pieces[piece_id];

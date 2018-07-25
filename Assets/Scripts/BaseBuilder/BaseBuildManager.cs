@@ -21,6 +21,10 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
 
     public Vector2Int mouse_position { get; private set; }
 
+    public bool mouse_over_ui {
+        get; private set;
+    }
+
     public Dictionary<Vector2Int, TriggerableBasePiece> triggerables { get; private set; }
     public Dictionary<Vector2Int, TriggerBasePiece> triggers { get; private set; }
     public Dictionary<TriggerableBasePiece, TriggerBasePiece> triggerable_to_trigger { get; private set; }
@@ -30,6 +34,12 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
 
     public PlaceBlocks place_blocks {
         get { return _place_blocks;  }
+    }
+    public LinkTraps link {
+        get { return _link; }
+    }
+    public PlaceEnemies place_enemies {
+        get { return _place_enemies; }
     }
 
     [SerializeField] Vector2Int size;
@@ -54,8 +64,8 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
     BuildMode current_build_mode;
 
     PlaceBlocks _place_blocks;
-    LinkTraps link;
-    PlaceEnemies place_enemies;
+    LinkTraps _link;
+    PlaceEnemies _place_enemies;
 
     BaseBuildInventoryTracker inventory_tracker;
 
@@ -63,17 +73,17 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         if (current_build_mode == BuildMode.PlaceBlocks) {
             _place_blocks.Deactivate();
         } else if (current_build_mode == BuildMode.Link) {
-            link.Deactivate();
+            _link.Deactivate();
         } else if (current_build_mode == BuildMode.PlaceEnemies) {
-            place_enemies.Deactivate();
+            _place_enemies.Deactivate();
         }
         current_build_mode = mode;
         if (current_build_mode == BuildMode.PlaceBlocks) {
             _place_blocks.Activate();
         } else if (current_build_mode == BuildMode.Link) {
-            link.Activate();
+            _link.Activate();
         } else if (current_build_mode == BuildMode.PlaceEnemies) {
-            place_enemies.Activate();
+            _place_enemies.Activate();
         }
     }
 
@@ -200,6 +210,7 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         }
         triggerable_to_trigger.Add(triggerable, trigger);
         trigger_to_triggerable.Add(trigger, triggerable);
+        map_changed_event.Invoke();
     }
 
     public void DeleteLink(TriggerBasePiece trigger, TriggerableBasePiece triggerable) {
@@ -209,6 +220,13 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         if (trigger_to_triggerable.ContainsKey(trigger) && trigger_to_triggerable[trigger] == triggerable) {
             trigger_to_triggerable.Remove(trigger);
         }
+        map_changed_event.Invoke();
+    }
+
+    public void ClearLinks() {
+        trigger_to_triggerable.Clear();
+        triggerable_to_trigger.Clear();
+        map_changed_event.Invoke();
     }
 
     public bool CanBePlaced(BasePiece piece, Vector2Int position, Facing facing) {
@@ -266,13 +284,13 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         _place_blocks.SetManager(this);
         _place_blocks.Deactivate();
 
-        link = GetComponent<LinkTraps>();
-        link.SetManager(this);
-        link.Deactivate();
+        _link = GetComponent<LinkTraps>();
+        _link.SetManager(this);
+        _link.Deactivate();
 
-        place_enemies = GetComponent<PlaceEnemies>();
-        place_enemies.SetManager(this);
-        place_enemies.Deactivate();
+        _place_enemies = GetComponent<PlaceEnemies>();
+        _place_enemies.SetManager(this);
+        _place_enemies.Deactivate();
 
         inventory_tracker = GetComponent<BaseBuildInventoryTracker>();
 
@@ -307,6 +325,8 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         if (Physics.Raycast(r, out hit, 100f, mask)) {
             mouse_position = (hit.point/block_size).RoundToVector3Int().ToVector2Int(Vector3Axis.y);
         }
+
+        mouse_over_ui = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
 	}
 
     void SelectGroup(EnemyGroup group) {
@@ -456,7 +476,7 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
             }
         }
         foreach (Vector2Int check in to_check) {
-            if (point_to_piece.ContainsKey(check)) {
+            if (point_to_piece.ContainsKey(check) || (point_to_enemy_group.ContainsKey(check) && piece.blocks_path)) {
                 return false;
             }
         }

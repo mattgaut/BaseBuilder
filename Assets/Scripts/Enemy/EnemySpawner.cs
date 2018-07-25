@@ -11,4 +11,8 @@ public class EnemySpawner : MonoBehaviour {
         Destroy(gameObject);
         return to_return;
     }
+
+    public void SetToSpawn(Enemy e) {
+        to_spawn = e;
+    }
 }

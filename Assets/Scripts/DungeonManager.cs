@@ -13,7 +13,7 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
     Exit exit;
     Vector2 size;
 
-    [SerializeField]float scale;
+    [SerializeField]float scale, block_size;
 
     bool level_over;
 
@@ -67,7 +67,7 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
             }
         }
 
-        character.transform.position = (Vector3)entrance_position.ToVector3Int(Vector3Axis.y) * scale;
+        character.transform.position = (Vector3)entrance_position.ToVector3Int(Vector3Axis.y) * scale * block_size;
 
         return true;
     }
@@ -75,7 +75,7 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
     // Use this for initialization
     void Start () {
 		if (!Load(SceneBridge.GetBaseData())) {
-
+            SceneManager.LoadScene(0);
         }
 	}
 
@@ -91,7 +91,7 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
         new_piece.Init(false);
         new_piece.position = position;
         new_piece.facing = facing;
-        new_piece.transform.position =  ((Vector3)position.ToVector3Int(Vector3Axis.y) * scale) - new Vector3(new_piece.anchor.x * scale, 0, new_piece.anchor.y * scale);
+        new_piece.transform.position =  (position.ToVector3Int(Vector3Axis.y) - new Vector3(new_piece.anchor.x * scale, 0, new_piece.anchor.y))* scale * block_size;
         new_piece.transform.localScale = Vector3.one * scale;
         new_piece.transform.rotation = Quaternion.Euler(Vector2.up * (int)facing);
 
@@ -102,7 +102,7 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
         EnemyGroup new_enemy_group = Instantiate(enemy);
         new_enemy_group.position = position;
         new_enemy_group.facing = facing;
-        new_enemy_group.transform.position = (Vector3)(position.ToVector3Int(Vector3Axis.y) - new_enemy_group.anchor.ToVector3Int(Vector3Axis.y)) * scale;
+        new_enemy_group.transform.position = (Vector3)(position.ToVector3Int(Vector3Axis.y) - new_enemy_group.anchor.ToVector3Int(Vector3Axis.y)) * scale * block_size;
         new_enemy_group.transform.rotation = Quaternion.Euler(Vector2.up * (int)facing);
 
         return new_enemy_group;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WalkTowardsTarget : EnemyController {
-    [SerializeField] Transform target;
 
     protected override IEnumerator AIRoutine() {
         yield return Walk();
@@ -11,7 +10,7 @@ public class WalkTowardsTarget : EnemyController {
 
     protected IEnumerator Walk() {
         while (true) {
-            Vector3 move_towards = target.position - transform.position;
+            Vector3 move_towards = target.transform.position - transform.position;
             move_towards.y = 0;
             input = move_towards;
             yield return null;

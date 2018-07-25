@@ -62,7 +62,7 @@ public class PlaceEnemies : MonoBehaviour {
             }
         }
         if (Input.GetMouseButtonDown(1)) {
-            manager.TryDeletePiece(mouse_position);
+            manager.TryDeleteEnemy(mouse_position);
             manager.ValidateMap();
         }
     }

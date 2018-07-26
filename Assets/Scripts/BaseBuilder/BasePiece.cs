@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BasePiece : MonoBehaviour {
+    [SerializeField] string _piece_name;
+
     [SerializeField] Vector2Int _size;
     [SerializeField] Vector2Int _anchor;
 
@@ -15,6 +17,10 @@ public class BasePiece : MonoBehaviour {
 
     [SerializeField] bool _can_be_mounted_on;
     [SerializeField] bool _must_be_mounted;
+
+    public string piece_name {
+        get { return _piece_name; }
+    }
 
     public int id {
         get { return _id; }

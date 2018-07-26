@@ -36,7 +36,7 @@ public class PieceSelectionMenu : MonoBehaviour {
         foreach (int base_piece_id in tracker.tracked_inventory.AllAvailablePieces()) {
             PieceSelectionButton new_button = Instantiate(selection_prefab, button_holder);
             BasePiece piece_to_emulate = Database.base_pieces.GetBasePieceFromID(base_piece_id);
-            new_button.title = piece_to_emulate.name;
+            new_button.title = piece_to_emulate.piece_name;
             new_button.count_max = tracker.tracked_inventory.GetBasePieceCount(base_piece_id);
             new_button.count = new_button.count_max - tracker.PiecesPlaced(base_piece_id);
             new_button.button.onClick.AddListener(() => build_manager.place_blocks.SetSelectedPiece(piece_to_emulate));
@@ -55,7 +55,7 @@ public class PieceSelectionMenu : MonoBehaviour {
             }
 
             PieceSelectionButton new_button = Instantiate(selection_prefab, button_holder);
-            new_button.title = piece_to_emulate.name;
+            new_button.title = piece_to_emulate.piece_name;
             new_button.ShowCount(false);
             new_button.button.onClick.AddListener(() => build_manager.place_blocks.SetSelectedPiece(piece_to_emulate));
         }

@@ -30,10 +30,10 @@ public class LinkDisplayMenu : MonoBehaviour {
 
             LinkDisplay new_link_display = Instantiate(link_display_prefab, link_display_holder);
 
-            new_link_display.trap_title = trap.name;
-            new_link_display.trigger_title = trigger.name;
+            new_link_display.trap_title = trap.piece_name;
+            new_link_display.trigger_title = trigger.piece_name;
 
-            new_link_display.delete_button.onClick.AddListener(() => build_manager.DeleteLink(trigger, trap));
+            new_link_display.delete_button.onClick.AddListener(() => { build_manager.DeleteLink(trigger, trap); EndHover(); });
 
             new_link_display.SetEnterAction(() => StartHover(trap));
             new_link_display.SetExitAction(() => EndHover());
@@ -56,5 +56,6 @@ public class LinkDisplayMenu : MonoBehaviour {
 
     void EndHover() {
         StopCoroutine(hover_routine);
+        build_manager.link.ClearLinkHighlight();
     }
 }

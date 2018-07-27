@@ -42,6 +42,4 @@ public class DisplaySavedBases : MonoBehaviour {
             SceneManager.LoadScene(scene_to_load);
         }
     }
-
-
 }

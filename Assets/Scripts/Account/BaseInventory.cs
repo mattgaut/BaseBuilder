@@ -33,6 +33,22 @@ public class BaseInventory : MonoBehaviour {
         enemy_groups = new_enemy_groups;
     }
 
+    public void LoadInventory(BaseInventoryData data) {
+        base_pieces = new int[data.base_pieces.Length];
+        enemy_groups = new int[data.enemy_groups.Length];
+        for (int i = 0; i < base_pieces.Length; i++) {
+
+            base_pieces[i] = data.base_pieces[i];
+        }
+        for (int i = 0; i < enemy_groups.Length; i++) {
+            enemy_groups[i] = data.enemy_groups[i];
+        }
+    }
+
+    public BaseInventoryData SaveInventory() {
+        return new BaseInventoryData(base_pieces, enemy_groups);
+    }
+
     public int GetBasePieceCount(int piece_id) {
         if (piece_id < base_pieces.Length) {
             return base_pieces[piece_id];
@@ -92,5 +108,23 @@ public class BaseInventory : MonoBehaviour {
             enemy_groups[id] -= count;
         }
         return false;
+    }
+}
+
+[System.Serializable]
+public class BaseInventoryData {
+    public static BaseInventoryData empty { get { return new BaseInventoryData(new int[] { }, new int[] { }); } }
+
+    [SerializeField] public int[] base_pieces, enemy_groups;
+
+    public BaseInventoryData(int[] base_pieces, int[] enemy_groups) {
+        this.base_pieces = new int[base_pieces.Length];
+        this.enemy_groups = new int[enemy_groups.Length];
+        for (int i = 0; i < base_pieces.Length; i++) {
+            this.base_pieces[i] = base_pieces[i];
+        }
+        for (int i = 0; i < enemy_groups.Length; i++) {
+            this.enemy_groups[i] = enemy_groups[i];
+        }
     }
 }

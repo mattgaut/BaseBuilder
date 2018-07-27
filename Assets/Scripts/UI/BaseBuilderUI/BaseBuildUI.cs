@@ -96,6 +96,8 @@ public class BaseBuildUI : MonoBehaviour {
             return;
         }
         if (AccountHolder.account.SetHomeBase(builder.Save())) {
+            set_home_button.GetComponentInChildren<Text>().text = "Map Set";
+        } else {
             set_home_button.GetComponentInChildren<Text>().text = "Not Enough Resources";
         }
     }

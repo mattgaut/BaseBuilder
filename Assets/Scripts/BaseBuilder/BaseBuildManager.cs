@@ -106,6 +106,9 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         foreach (BasePiece bp in piece_to_anchor.Keys) {
             Destroy(bp.gameObject);
         }
+        foreach (EnemyGroup eg in enemy_group_to_anchor.Keys) {
+            Destroy(eg.gameObject);
+        }
         piece_to_anchor.Clear();
         point_to_piece.Clear();
         triggers.Clear();
@@ -118,6 +121,8 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
 
         entrance_position = new Vector2Int(data.entrance_x, data.entrance_y);
         exit_position = new Vector2Int(data.exit_x, data.exit_y);
+
+        inventory_tracker.ResetTracking();
 
         size.x = data.width;
         size.y = data.height;
@@ -457,6 +462,7 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
 
     void DeleteEnemy(Vector2Int position) {
         EnemyGroup group = point_to_enemy_group[position];
+        group.transform.position += Vector3.up;
 
         if (InBounds(position)) {
             inventory_tracker.NoteGroupRemoval(group.id);

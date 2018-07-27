@@ -33,6 +33,11 @@ public class BaseBuildInventoryTracker : MonoBehaviour {
         }
     }
 
+    public void ResetTracking() {
+        placed_pieces = new int[Database.base_pieces.max_id + 1];
+        placed_groups = new int[Database.enemy_groups.max_id + 1];
+    }
+
     public bool CanPlacePiece(int piece_id) {
         if (!tracking) {
             return true;

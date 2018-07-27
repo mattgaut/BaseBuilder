@@ -309,7 +309,13 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
     }
 
     void Start() {
-        BaseData data = SceneBridge.GetBaseData();
+        BaseData data;
+        if (free_build || !AccountHolder.has_valid_account) {
+            data = null;
+        } else {
+            data = AccountHolder.account.home_base;
+        }
+
         if (!Load(data)) {
             CreateBorderWall();
         }
@@ -630,14 +636,14 @@ public class BaseData {
             triggerables[i] = new Position(pairs[i].Value.position);
         }
     }
-    public int GetPieceCount(int id) {
+    public int GetPieceCount(int id, bool in_bounds = true) {
         int count = 0;
         foreach (BasePieceData piece in base_pieces_by_id) {
-            if (piece != null && piece.id == id) {
+            if (piece != null && piece.id == id && (!in_bounds || InBounds(piece.position))) {
                 count++;
             }
         }
-        return id;
+        return count;
     }
     public int GetGroupCount(int id) {
         int count = 0;
@@ -646,7 +652,10 @@ public class BaseData {
                 count++;
             }
         }
-        return id;
+        return count;
+    }
+    bool InBounds(Vector2Int position) {
+        return !(position.x <= 0 || position.x >= width + 1 || position.y <= 0 || position.y >= height + 1);
     }
 
     [System.Serializable]

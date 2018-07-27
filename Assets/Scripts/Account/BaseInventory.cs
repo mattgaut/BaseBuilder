@@ -58,7 +58,7 @@ public class BaseInventory : MonoBehaviour {
             }
         }
         for (int i = 0; i < enemy_groups.Length; i++) {
-            if (base_pieces[i] < data.GetGroupCount(i)) {
+            if (enemy_groups[i] < data.GetGroupCount(i)) {
                 return false;
             }
         }

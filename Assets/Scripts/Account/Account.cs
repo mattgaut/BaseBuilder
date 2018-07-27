@@ -13,6 +13,7 @@ public class Account : MonoBehaviour {
     public void Load(AccountData data) {
         account_name = data.account_name;
         base_inventory.LoadInventory(data.base_inventory_data);
+        home_base = data.home_base;
         account_loaded = true;
     }
 

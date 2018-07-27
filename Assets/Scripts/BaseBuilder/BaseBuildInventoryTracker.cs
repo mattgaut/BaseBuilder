@@ -18,12 +18,6 @@ public class BaseBuildInventoryTracker : MonoBehaviour {
     int[] placed_pieces;
     int[] placed_groups;
 
-    private void Awake() {
-        if (AccountHolder.has_valid_account) {
-            SetTrackedInventory(AccountHolder.account.base_inventory);
-        }
-    }
-
     public void SetTrackedInventory(BaseInventory inventory) {
         _tracked_inventory = inventory;
 

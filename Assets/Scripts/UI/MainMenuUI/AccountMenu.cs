@@ -22,8 +22,8 @@ public class AccountMenu : MonoBehaviour {
         login_button.button.onClick.AddListener(() => OpenMenu());
         create_account_button.onClick.AddListener(() => CreateAndLoadAccount());
 
-        if (AccountHolder.GetAccount().account_loaded) {
-            login_button.SetAccount(AccountHolder.GetAccount().account_name);
+        if (AccountHolder.account.account_loaded) {
+            login_button.SetAccount(AccountHolder.account.account_name);
             play_button.interactable = true;
         }
     }
@@ -93,10 +93,10 @@ public class AccountMenu : MonoBehaviour {
         BinaryFormatter bf = new BinaryFormatter();
         FileStream file = File.Open(Application.persistentDataPath + "/Accounts/" + account_name + ".ai", FileMode.Open);
 
-        AccountHolder.GetAccount().Load((AccountData)bf.Deserialize(file));
+        AccountHolder.account.Load((AccountData)bf.Deserialize(file));
         file.Close();
 
-        login_button.SetAccount(AccountHolder.GetAccount().account_name);
+        login_button.SetAccount(AccountHolder.account.account_name);
         play_button.interactable = true;
         CloseMenu();
     }

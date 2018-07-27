@@ -37,7 +37,6 @@ public class BaseInventory : MonoBehaviour {
         base_pieces = new int[data.base_pieces.Length];
         enemy_groups = new int[data.enemy_groups.Length];
         for (int i = 0; i < base_pieces.Length; i++) {
-
             base_pieces[i] = data.base_pieces[i];
         }
         for (int i = 0; i < enemy_groups.Length; i++) {
@@ -47,6 +46,23 @@ public class BaseInventory : MonoBehaviour {
 
     public BaseInventoryData SaveInventory() {
         return new BaseInventoryData(base_pieces, enemy_groups);
+    }
+
+    public bool CanBuild(BaseData data) {
+        for (int i = 0; i < base_pieces.Length; i++) {
+            if (i == Database.base_pieces.entrance_id || i == Database.base_pieces.exit_id) {
+                continue;
+            }
+            if (base_pieces[i] < data.GetPieceCount(i)) {
+                return false;
+            }
+        }
+        for (int i = 0; i < enemy_groups.Length; i++) {
+            if (base_pieces[i] < data.GetGroupCount(i)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public int GetBasePieceCount(int piece_id) {

@@ -27,11 +27,11 @@ public class BaseSaveLoadManager : MonoBehaviour {
 
     public void Save(string filename) {
         BaseData data = base_manager.Save();
+        data.name = filename;
 
         BinaryFormatter bf = new BinaryFormatter();
 
         Directory.CreateDirectory(Application.persistentDataPath + "/Bases/");
-        Debug.Log(Application.persistentDataPath + "/Bases/");
         FileStream file = File.Open(Application.persistentDataPath + "/Bases/" + filename + ".bi", FileMode.OpenOrCreate);
 
         bf.Serialize(file, data);

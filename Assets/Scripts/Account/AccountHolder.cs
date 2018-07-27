@@ -7,17 +7,19 @@ using UnityEngine;
 [RequireComponent(typeof(Account))]
 public class AccountHolder : MonoBehaviour {
 
-    static AccountHolder instance;
-    static bool has_valid_account { get { return instance != null && instance.account.account_loaded; } }
-
-    Account account;
-
-    public static Account GetAccount() {
-        if (instance == null) {
-            return null;
+    public static bool has_valid_account { get { return instance != null && instance._account.account_loaded; } }
+    public static Account account {
+        get {
+            if (instance == null) {
+                return null;
+            }
+            return instance._account;
         }
-        return instance.account;
     }
+
+    static AccountHolder instance;
+
+    Account _account;
 
     void Awake() {
         if (instance == null) {
@@ -30,14 +32,14 @@ public class AccountHolder : MonoBehaviour {
     }
 
     void Init() {
-        account = GetComponent<Account>();
+        _account = GetComponent<Account>();
     }
 
     void SaveCurrentAccount() {
         if (!has_valid_account) {
             return;
         }
-        AccountData data = account.Save();
+        AccountData data = _account.Save();
 
         Directory.CreateDirectory(Application.persistentDataPath + "/Accounts/");
         FileStream file = File.Open(Application.persistentDataPath + "/Accounts/" + data.account_name + ".ai", FileMode.OpenOrCreate);

@@ -7,6 +7,8 @@ public class LinkTraps : MonoBehaviour {
     BaseBuildManager manager;
     bool active;
 
+    public bool link_waiting { get { return to_link_triggerable != null || to_link_trigger != null; } }
+
     TriggerableBasePiece to_link_triggerable;
     TriggerBasePiece to_link_trigger;
 

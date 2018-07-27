@@ -12,7 +12,7 @@ public class PlaceBlocks : MonoBehaviour {
     bool placing_entrance;
     bool placing_exit;
 
-    BasePiece selected_piece;
+    public BasePiece selected_piece { get; private set; }
 
     Vector2Int mouse_position {
         get { return manager.mouse_position; }

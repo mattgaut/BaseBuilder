@@ -10,9 +10,8 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
 
     public enum BuildMode { View, PlaceBlocks, Link, PlaceEnemies }
 
-    public bool map_valid {
-        get; private set;
-    }
+    public bool map_valid { get; private set; }
+    public bool free_build { get; private set; }
 
     public Facing current_facing { get; private set; }
 
@@ -41,6 +40,9 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
     public PlaceEnemies place_enemies {
         get { return _place_enemies; }
     }
+
+    public bool took_input { get; private set; }
+    public bool taking_input { get { return place_blocks.selected_piece != null || link.link_waiting || place_enemies.selected_group != null;  } }
 
     [SerializeField] Vector2Int size;
     [SerializeField][Range(1, 10)] int _block_size = 1;
@@ -294,11 +296,11 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
 
         inventory_tracker = GetComponent<BaseBuildInventoryTracker>();
 
-        map_changed_event = new UnityEvent();
-    }
+        free_build = SceneBridge.GetFreeBuild();
+        if (free_build) inventory_tracker.SetTrackedInventory(null);
+        else if (AccountHolder.account) inventory_tracker.SetTrackedInventory(AccountHolder.account.base_inventory);
 
-    void OnGUI() {
-        GUI.Label(new Rect(0, 60, 100, 20), map_valid ? "Valid" : "Invalid");
+        map_changed_event = new UnityEvent();
     }
 
     void Start() {
@@ -307,6 +309,22 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
             CreateBorderWall();
         }
         SwitchMode(BuildMode.PlaceBlocks);
+    }
+    void OnGUI() {
+        GUI.Label(new Rect(0, 60, 100, 20), map_valid ? "Valid" : "Invalid");
+    }
+
+    void Update() {
+        Ray r = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(r, out hit, 100f, mask)) {
+            mouse_position = (hit.point / block_size).RoundToVector3Int().ToVector2Int(Vector3Axis.y);
+        }
+
+        mouse_over_ui = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+    }
+    void LateUpdate() {
+        took_input = taking_input;
     }
 
     void CreateBorderWall() {
@@ -318,16 +336,6 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
             }
         }
     }
-
-    void Update () {
-        Ray r = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(r, out hit, 100f, mask)) {
-            mouse_position = (hit.point/block_size).RoundToVector3Int().ToVector2Int(Vector3Axis.y);
-        }
-
-        mouse_over_ui = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
-	}
 
     void SelectGroup(EnemyGroup group) {
         if (selected_group != null) {
@@ -556,6 +564,7 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
 
 [System.Serializable]
 public class BaseData {
+    public string name;
     public BasePieceData[,] base_pieces_by_id;
     public EnemyGroupData[,] enemy_group_by_id;
     public int height;
@@ -614,6 +623,24 @@ public class BaseData {
             triggers[i] = new Position(pairs[i].Key.position);
             triggerables[i] = new Position(pairs[i].Value.position);
         }
+    }
+    public int GetPieceCount(int id) {
+        int count = 0;
+        foreach (BasePieceData piece in base_pieces_by_id) {
+            if (piece != null && piece.id == id) {
+                count++;
+            }
+        }
+        return id;
+    }
+    public int GetGroupCount(int id) {
+        int count = 0;
+        foreach (EnemyGroupData group in enemy_group_by_id) {
+            if (group != null && group.id == id) {
+                count++;
+            }
+        }
+        return id;
     }
 
     [System.Serializable]

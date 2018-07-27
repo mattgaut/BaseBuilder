@@ -7,7 +7,7 @@ public class PlaceEnemies : MonoBehaviour {
     BaseBuildManager manager;
     bool active;
 
-    EnemyGroup selected_group;
+    public EnemyGroup selected_group { get; private set; }
 
     Vector2Int mouse_position {
         get { return manager.mouse_position; }

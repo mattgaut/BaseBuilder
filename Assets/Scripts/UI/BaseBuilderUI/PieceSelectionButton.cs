@@ -34,6 +34,12 @@ public class PieceSelectionButton : MonoBehaviour {
             _count_text.text = _count + " / " + _count_max;
         }
     }
+    public int total {
+        set {
+            _count = value;
+            _count_text.text = _count + "";
+        }
+    }
 
     [SerializeField] Button _button;
     [SerializeField] Image image;

@@ -16,6 +16,15 @@ public class Database : MonoBehaviour {
         get { return instance._enemy_groups; }
     }
 
+    public static int GetMaxID(ItemType type) {
+        if (type == ItemType.BasePiece) {
+            return base_pieces.max_id;
+        } else if (type == ItemType.EnemyGroup) {
+            return enemy_groups.max_id;
+        }
+        return 0;
+    }
+
     private void Awake() {
         if (instance == null) {
             instance = this;
@@ -23,5 +32,4 @@ public class Database : MonoBehaviour {
             Destroy(gameObject);
         }
     }
-
 }

@@ -4,7 +4,6 @@ using UnityEngine;
 
 ////
 // Combat Interfaces
-
 public interface IStats {
     ResourceStat health { get; }
 }
@@ -40,9 +39,14 @@ public interface IBaseSaveLoad : IBaseLoad, IBaseSave {
 public interface ITriggerable {
     void SetTriggerHitbox(ZoneHitbox hitbox);
 }
-
 public interface ITrigger {
     ZoneHitbox trigger_hitbox {
         get;
     }
+}
+
+public interface IItem {
+
+    int id { get; }
+    string item_name { get; }
 }

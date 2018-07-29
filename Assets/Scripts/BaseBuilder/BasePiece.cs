@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BasePiece : MonoBehaviour, IItem {
     [SerializeField] string _piece_name;
+    [SerializeField] int _price;
 
     [SerializeField] Vector2Int _size;
     [SerializeField] Vector2Int _anchor;
@@ -27,6 +28,10 @@ public class BasePiece : MonoBehaviour, IItem {
 
     public int id {
         get { return _id; }
+    }
+
+    public int price {
+        get { return _price; }
     }
 
     public BasePieceEditor editor {

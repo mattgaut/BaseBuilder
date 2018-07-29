@@ -24,7 +24,7 @@ public class AccountHolder : MonoBehaviour {
     void Awake() {
         if (instance == null) {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(transform.parent.gameObject);
             Init();
         } else {
             Destroy(gameObject);

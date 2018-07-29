@@ -49,4 +49,5 @@ public interface IItem {
 
     int id { get; }
     string item_name { get; }
+    int price { get; }
 }

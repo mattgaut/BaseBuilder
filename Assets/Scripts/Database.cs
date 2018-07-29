@@ -25,9 +25,19 @@ public class Database : MonoBehaviour {
         return 0;
     }
 
+    public static IItem GetItem(ItemType type, int id) {
+        if (type == ItemType.BasePiece) {
+            return base_pieces.GetBasePieceFromID(id);
+        } else if (type == ItemType.EnemyGroup) {
+            return enemy_groups.GetEnemyGroupFromID(id);
+        }
+        return null;
+    }
+
     private void Awake() {
         if (instance == null) {
             instance = this;
+            DontDestroyOnLoad(transform.parent.gameObject);
         } else {
             Destroy(gameObject);
         }

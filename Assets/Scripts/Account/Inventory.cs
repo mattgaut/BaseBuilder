@@ -6,14 +6,16 @@ using UnityEngine;
 public class Inventory : MonoBehaviour {
 
     public BaseInventory base_inventory { get; private set; }
-    public int gold { get; private set; }
+    public int gold;
 
     private void Awake() {
         base_inventory = GetComponent<BaseInventory>();
     }
 
     public void LoadInventory(InventoryData data) {
+        gold = data.gold;
         base_inventory.LoadInventory(data.base_inventory_data);
+        base_inventory.UpdateInventory(Database.GetMaxID(ItemType.BasePiece), Database.GetMaxID(ItemType.EnemyGroup));
     }
 
     public bool TrySpendGold(int spend) {

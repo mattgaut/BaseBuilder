@@ -45,8 +45,8 @@ public class ShopItemDisplay : MonoBehaviour {
         confirm_text.text = text;
     }
 
-    public void SetConfirmAction(UnityAction action) {
-        confirm.onClick.AddListener(action);
+    public void SetConfirmAction(UnityAction<int> action) {
+        confirm.onClick.AddListener(() => action(transaction_count));
     }
 
     void Awake() {

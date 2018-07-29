@@ -10,6 +10,8 @@ public class EnemyGroup : MonoBehaviour, IItem {
     [SerializeField] int _id;
     [SerializeField] string _group_name;
 
+    [SerializeField] int _price;
+
     List<EnemySpawner> spawners;
 
     public int id {
@@ -34,6 +36,10 @@ public class EnemyGroup : MonoBehaviour, IItem {
 
     public string item_name {
         get { return _group_name; }
+    }
+
+    public int price {
+        get { return _price; }
     }
 
     private void Awake() {

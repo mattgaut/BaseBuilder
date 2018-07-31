@@ -12,12 +12,18 @@ public class Account : MonoBehaviour {
 
     public bool account_loaded { get; private set; }
     public BaseData home_base { get; private set; }
+    public ShopData shop { get; private set; }
+
+    public void SetShopData(ShopData data) {
+        shop = data;
+    }
 
     public void Load(AccountData data) {
         account_name = data.account_name;
         inventory.LoadInventory(data.inventory_data);
         home_base = data.home_base;
         account_loaded = true;
+        shop = data.shop;
     }
 
     public AccountData Save() {
@@ -43,6 +49,7 @@ public class AccountData {
     public string account_name;
     public InventoryData inventory_data;
     public BaseData home_base;
+    public ShopData shop;
 
     public AccountData(string account_name) {
         this.account_name = account_name;
@@ -52,5 +59,6 @@ public class AccountData {
         account_name = account.account_name;
         inventory_data = account.inventory.SaveInventory();
         home_base = account.home_base;
+        shop = account.shop;
     }
 }

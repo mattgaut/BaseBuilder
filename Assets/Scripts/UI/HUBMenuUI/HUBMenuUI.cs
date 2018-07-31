@@ -32,7 +32,12 @@ public class HUBMenuUI : MonoBehaviour {
         SceneManager.LoadScene("BaseBuildScene");
     }
 
-    void SetInventory() {
+    public void SetInventory() {
+        for (int i = button_holder.childCount - 1; i >= 0; i--) {
+            Destroy(button_holder.GetChild(i).gameObject);
+        }
+
+        button_holder.sizeDelta = new Vector2(button_holder.sizeDelta.x, 0);
         foreach (int base_piece_id in account.base_inventory.AllAvailablePieces()) {
             PieceSelectionButton new_button = Instantiate(selection_prefab, button_holder);
             BasePiece piece_to_emulate = Database.base_pieces.GetBasePieceFromID(base_piece_id);

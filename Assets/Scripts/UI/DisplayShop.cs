@@ -14,6 +14,13 @@ public class DisplayShop : MonoBehaviour {
 
     Account patron;
 
+    public void RefreshInventories() {
+        RefreshShopBasePieces();
+        RefreshShopEnemyGroups();
+        RefreshPlayerBasePieces();
+        RefreshPlayerEnemyGroups();
+    }
+
     void Awake() {
         patron = AccountHolder.account;
 
@@ -24,16 +31,9 @@ public class DisplayShop : MonoBehaviour {
         RefreshDisplay();
     }
 
-    void RefreshInventories() {
-        RefreshShopBasePieces();
-        RefreshShopEnemyGroups();
-        RefreshPlayerBasePieces();
-        RefreshPlayerEnemyGroups();
-    }
-
     void RefreshDisplay() {
         gold_text.text = "Shop Gold: " + shop.inventory.gold;
-        shop_refresh_text.text = "Shop Refreshes In: XX:XX";
+        shop_refresh_text.text = "Shop Refreshes In: " + shop.time_left.Hours.ToString("00") + ":" + shop.time_left.Minutes.ToString("00") + ":" + shop.time_left.Seconds.ToString("00");
     }
 
     void RefreshPlayerBasePieces() {
@@ -71,9 +71,9 @@ public class DisplayShop : MonoBehaviour {
                 new_display.SetConfirmText(buying_from_shop ? "Buy" : "Sell");
                 int id_copy = id;
                 if (buying_from_shop) {
-                    new_display.SetConfirmAction((transaction_count) => { shop.SellItem(patron.inventory, item_type, id_copy, item.price, transaction_count); RefreshInventories(); });
+                    new_display.SetConfirmAction((transaction_count) => SellItem(item_type, id_copy, item.price, transaction_count));
                 } else {
-                    new_display.SetConfirmAction((transaction_count) => { shop.BuyItem(patron.inventory, item_type, id_copy, item.price, transaction_count); RefreshInventories(); });
+                    new_display.SetConfirmAction((transaction_count) => BuyItem(item_type, id_copy, item.price, transaction_count));
                 }
                 attach_to.sizeDelta += Vector2.up * new_display.GetComponent<RectTransform>().rect.height;
             }
@@ -90,5 +90,17 @@ public class DisplayShop : MonoBehaviour {
     void LoadItemDisplay(ShopItemDisplay item_display, IItem item, int count) {
         item_display.SetName(item.item_name);
         item_display.SetItemCount(count);
+    }
+
+    void SellItem(ItemType type, int id, int price, int transaction_count) {
+        shop.SellItem(patron.inventory, type, id, price, transaction_count);
+        patron.SetShopData(shop.Save());
+        RefreshInventories();
+    }
+
+    void BuyItem(ItemType type, int id, int price, int transaction_count) {
+        shop.BuyItem(patron.inventory, type, id, price, transaction_count);
+        patron.SetShopData(shop.Save());
+        RefreshInventories();
     }
 }

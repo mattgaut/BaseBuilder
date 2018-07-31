@@ -48,6 +48,7 @@ public class AccountMenu : MonoBehaviour {
     void CreateAndLoadAccount() {
         AccountData data = new AccountData(account_name_field.text);
         data.inventory_data = new InventoryData(1000);
+        data.shop = new ShopData();
 
         Directory.CreateDirectory(Application.persistentDataPath + "/Accounts/");
         if (File.Exists(Application.persistentDataPath + "/Accounts/" + data.account_name + ".ai")) {

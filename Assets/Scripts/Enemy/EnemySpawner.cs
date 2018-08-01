@@ -6,6 +6,10 @@ public class EnemySpawner : MonoBehaviour {
 
     [SerializeField] Enemy to_spawn;
 
+    public Enemy enemy {
+        get { return to_spawn; }
+    }
+
     public Enemy Spawn() {
         Enemy to_return = Instantiate(to_spawn, transform.position, transform.rotation);
         Destroy(gameObject);

@@ -34,6 +34,94 @@ public class Database : MonoBehaviour {
         return null;
     }
 
+    public static int GetMinGoldValue(BaseData base_data) {
+        int min = 0;
+        foreach (BaseData.BasePieceData piece_data in base_data.base_pieces_by_id) {
+            if (piece_data == null) {
+                continue;
+            }
+            BasePiece bp = base_pieces.GetBasePieceFromID(piece_data.id);
+            if (bp != null) {
+                min += bp.gold_value;
+            }
+        }
+        return min;
+    }
+
+    public static void GetGoldValue(BaseData base_data, out int min, out int max) {
+        min = max = 0;
+        foreach (BaseData.BasePieceData piece_data in base_data.base_pieces_by_id) {
+            if (piece_data == null) {
+                continue;
+            }
+            BasePiece bp = base_pieces.GetBasePieceFromID(piece_data.id);
+            if (bp != null) {
+                min += bp.gold_value;
+            }
+        }
+        foreach (BaseData.EnemyGroupData enemy_group_data in base_data.enemy_group_by_id) {
+            if (enemy_group_data == null) {
+                continue;
+            }
+            EnemyGroup eg = enemy_groups.GetEnemyGroupFromID(enemy_group_data.id);
+            if (eg != null) {
+                max += eg.GetGoldValue();
+            }
+        }
+        max += min;
+    }
+
+    public static int GetMinExpValue(BaseData base_data) {
+        int min = 0;
+        foreach (BaseData.BasePieceData piece_data in base_data.base_pieces_by_id) {
+            if (piece_data == null) {
+                continue;
+            }
+            BasePiece bp = base_pieces.GetBasePieceFromID(piece_data.id);
+            if (bp != null) {
+                min += bp.exp_value;
+            }
+        }
+        return min;
+    }
+
+    public static void GetExpValue(BaseData base_data, out int min, out int max) {
+        min = max = 0;
+        foreach (BaseData.BasePieceData piece_data in base_data.base_pieces_by_id) {
+            if (piece_data == null) {
+                continue;
+            }
+            BasePiece bp = base_pieces.GetBasePieceFromID(piece_data.id);
+            if (bp != null) {
+                min += bp.exp_value;
+            }
+        }
+        foreach (BaseData.EnemyGroupData enemy_group_data in base_data.enemy_group_by_id) {
+            if (enemy_group_data == null) {
+                continue;
+            }
+            EnemyGroup eg = enemy_groups.GetEnemyGroupFromID(enemy_group_data.id);
+            if (eg != null) {
+                max += eg.GetExpValue();
+            }
+        }
+        max += min;
+    }
+
+    public static int GetEnemyCount(BaseData base_data) {
+        int count = 0;
+        foreach (BaseData.EnemyGroupData enemy_group_data in base_data.enemy_group_by_id) {
+            if (enemy_group_data == null) {
+                continue;
+            }
+            EnemyGroup eg = enemy_groups.GetEnemyGroupFromID(enemy_group_data.id);
+            if (eg != null) {
+                count += eg.enemy_count;
+            }
+        }
+        return count;
+    }
+
     private void Awake() {
         if (instance == null) {
             instance = this;

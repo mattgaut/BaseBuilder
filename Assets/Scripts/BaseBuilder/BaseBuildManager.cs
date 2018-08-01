@@ -645,6 +645,15 @@ public class BaseData {
         }
         return count;
     }
+    public int GetGroupCount() {
+        int count = 0;
+        foreach (EnemyGroupData group in enemy_group_by_id) {
+            if (group != null) {
+                count++;
+            }
+        }
+        return count;
+    }
     public int GetGroupCount(int id) {
         int count = 0;
         foreach (EnemyGroupData group in enemy_group_by_id) {

@@ -11,8 +11,9 @@ public class EnemyGroup : MonoBehaviour, IItem {
     [SerializeField] string _group_name;
 
     [SerializeField] int _price;
+    [SerializeField] int _gold_value;
 
-    List<EnemySpawner> spawners;
+    [SerializeField] List<EnemySpawner> spawners;
 
     public int id {
         get { return _id; }
@@ -42,8 +43,8 @@ public class EnemyGroup : MonoBehaviour, IItem {
         get { return _price; }
     }
 
-    private void Awake() {
-        spawners = new List<EnemySpawner>(GetComponentsInChildren<EnemySpawner>());
+    public int enemy_count {
+        get { return spawners.Count; }
     }
 
     public List<Enemy> SpawnEnemies() {
@@ -52,5 +53,20 @@ public class EnemyGroup : MonoBehaviour, IItem {
             enemies.Add(spawner.Spawn());
         }
         return enemies;
+    }
+
+    public int GetExpValue() {
+        int total = 0;
+        foreach (EnemySpawner es in spawners) {
+            total += es.enemy.exp_value;
+        }
+        return total;
+    }
+    public int GetGoldValue() {
+        int total = 0;
+        foreach (EnemySpawner es in spawners) {
+            total += es.enemy.gold_value;
+        }
+        return total;
     }
 }

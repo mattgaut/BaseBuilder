@@ -8,6 +8,7 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
     bool loaded;
 
     [SerializeField] PlayerCharacter character;
+    [SerializeField] VictoryScreenUI end_screen;
 
     Vector2Int entrance_position, exit_position;
     Exit exit;
@@ -19,14 +20,19 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
 
     Dictionary<Vector2Int, BasePiece> pieces;
     List<Enemy> enemies;
+    List<Enemy> killed_enemies;
+
+    BaseData loaded_map;
 
     public bool Load(BaseData data) {
         if (data == null || !data.map_valid) {
             return false;
         }
+        loaded_map = data;
 
         pieces = new Dictionary<Vector2Int, BasePiece>();
         enemies = new List<Enemy>();
+        killed_enemies = new List<Enemy>();
 
         entrance_position = new Vector2Int(data.entrance_x, data.entrance_y);
 
@@ -67,12 +73,15 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
             }
         }
 
+        foreach (Enemy enemy in enemies) {
+            enemy.on_die_event.AddListener((Enemy e) => NoteEnemyDeath(e));
+        }
+
         character.transform.position = (Vector3)entrance_position.ToVector3Int(Vector3Axis.y) * scale * block_size;
 
         return true;
     }
 
-    // Use this for initialization
     void Start () {
 		if (!Load(SceneBridge.GetBaseData())) {
             SceneManager.LoadScene(0);
@@ -83,6 +92,10 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
         if (!level_over && exit.player_touching_exit) {
             EndLevel();
         }
+    }
+
+    void NoteEnemyDeath(Enemy enemy) {
+        killed_enemies.Add(enemy);
     }
 
 
@@ -111,6 +124,21 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
     void EndLevel() {
         level_over = true;
 
-        SceneManager.LoadScene("HUBMenu");
+        Account account = AccountHolder.account;
+
+        int experience_gained = Database.GetMinExpValue(loaded_map); 
+        foreach (Enemy e in killed_enemies) {
+            experience_gained += e.exp_value;
+        }
+
+        int gold_gained = Database.GetMinGoldValue(loaded_map);
+        foreach (Enemy e in killed_enemies) {
+            gold_gained += e.gold_value;
+        }
+
+        account.inventory.AddGold(gold_gained);
+        account.GainExperience(experience_gained);
+
+        end_screen.DisplayScreen(experience_gained, gold_gained, AccountHolder.account);
     }
 }

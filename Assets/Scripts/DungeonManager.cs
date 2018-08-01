@@ -111,6 +111,6 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
     void EndLevel() {
         level_over = true;
 
-        SceneManager.LoadScene("BaseSelectScene");
+        SceneManager.LoadScene("HUBMenu");
     }
 }

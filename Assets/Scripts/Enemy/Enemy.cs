@@ -60,7 +60,7 @@ public class Enemy : MonoBehaviour, IDamageable, IDisplaceable {
 
     protected void Die() {
         on_die_event.Invoke(this);
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 
     void Awake() {

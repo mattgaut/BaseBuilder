@@ -9,6 +9,9 @@ public class HUBMenuUI : MonoBehaviour {
     [SerializeField] Text account_name_text, current_base_text;
     [SerializeField] Button base_editor;
 
+    [SerializeField] Text level_text;
+    [SerializeField] Slider account_level_slider;
+
     [SerializeField] RectTransform button_holder;
     [SerializeField] PieceSelectionButton selection_prefab;
 
@@ -20,6 +23,8 @@ public class HUBMenuUI : MonoBehaviour {
             account = AccountHolder.account;
             account_name_text.text = account.account_name;
             current_base_text.text = account.home_base == null ? "No Home Base" : "Current Base: " + account.home_base.name;
+            level_text.text = account.level + "";
+            account_level_slider.value = ((float)account.experience / account.experience_to_next_level);
             SetInventory();
         } else {
             current_base_text.text = "No Home Base";

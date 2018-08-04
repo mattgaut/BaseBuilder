@@ -6,7 +6,7 @@ using UnityEngine;
 public class Inventory : MonoBehaviour {
 
     public BaseInventory base_inventory { get; private set; }
-    public int gold;
+    public int gold { get; private set; }
 
     private void Awake() {
         base_inventory = GetComponent<BaseInventory>();

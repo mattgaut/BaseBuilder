@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class DisplayShop : MonoBehaviour {
 
     [SerializeField] Shop shop;
-    [SerializeField] Text gold_text, shop_refresh_text;
+    [SerializeField] Text gold_text, player_gold_text, shop_refresh_text;
 
     [SerializeField] RectTransform shop_base_pieces, shop_enemy_groups, player_base_pieces, player_enemy_groups;
 
@@ -34,6 +34,7 @@ public class DisplayShop : MonoBehaviour {
     void RefreshDisplay() {
         gold_text.text = "Shop Gold: " + shop.inventory.gold;
         shop_refresh_text.text = "Shop Refreshes In: " + shop.time_left.Hours.ToString("00") + ":" + shop.time_left.Minutes.ToString("00") + ":" + shop.time_left.Seconds.ToString("00");
+        player_gold_text.text = "Your Gold: " + patron.inventory.gold;
     }
 
     void RefreshPlayerBasePieces() {

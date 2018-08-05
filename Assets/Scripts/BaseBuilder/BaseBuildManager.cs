@@ -50,6 +50,8 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
 
     [SerializeField] BasePiece border_piece;
 
+    [SerializeField] TakeScreenShot screen_shot;
+
     UnityEvent map_changed_event;
 
     Dictionary<Vector2Int, BasePiece> point_to_piece;
@@ -96,6 +98,8 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
     public BaseData Save() {
         BaseData data = new BaseData(size, piece_to_anchor, enemy_group_to_anchor, entrance_position, exit_position, map_valid);
         data.SetTriggers(triggerable_to_trigger.ToList());
+        data.preview = (byte[])screen_shot.GetScreenShot().GetRawTextureData().Clone();
+
         return data;
     }
 
@@ -588,6 +592,8 @@ public class BaseData {
 
     public Position[] triggers;
     public Position[] triggerables;
+
+    public byte[] preview;
 
     public BaseData(Vector2Int size, Dictionary<BasePiece, Vector2Int> pieces, Dictionary<EnemyGroup, Vector2Int> enemies, Vector2Int entrance_position, Vector2Int exit_position, bool map_valid) {
         width = size.x;

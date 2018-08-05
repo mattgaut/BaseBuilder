@@ -15,10 +15,16 @@ public class PlayerController : MonoBehaviour {
 
     [SerializeField] float body_width = 0.5f;
 
+    [SerializeField] CameraRig camera_rig;
+
+    Quaternion current_rotation;
 
     void Awake() {
         body = GetComponent<Rigidbody>();
         character = GetComponent<PlayerCharacter>();
+
+        current_rotation = Quaternion.Euler(0,0,0);
+        camera_rig.SetRotation(current_rotation);
     }
 
     private void Update() {
@@ -36,6 +42,17 @@ public class PlayerController : MonoBehaviour {
         }
         if (Input.GetButtonDown("Ability4")) {
             character.UseAbility4();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E)) {
+            camera_rig.RotateRight();
+            current_rotation *= Quaternion.Euler(0, 90, 0);
+            body.transform.rotation *= Quaternion.Euler(0, 90, 0);
+        }
+        if (Input.GetKeyDown(KeyCode.Q)) {
+            camera_rig.RotateLeft();
+            current_rotation *= Quaternion.Euler(0, -90, 0);
+            body.transform.rotation *= Quaternion.Euler(0, -90, 0);
         }
     }
 
@@ -61,6 +78,7 @@ public class PlayerController : MonoBehaviour {
         Vector3 movement;
         if (!character.displaced) {
             movement = (new Vector3(horizontal, 0, vertical) * character.player_stats.speed * Time.deltaTime);
+            movement = current_rotation * movement;
         } else {
             movement = (character.displacement * Time.deltaTime);
         }

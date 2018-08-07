@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(PlayerStats))]
 public class PlayerCharacter : MonoBehaviour, IDamageable, IDisplaceable {
 
     [SerializeField] Ability ability_1, ability_2, ability_3, ability_4;
     PlayerStats _player_stats;
+    UnityEvent on_die_event;
 
     public Vector3 displacement {
         get; private set;
@@ -56,6 +58,7 @@ public class PlayerCharacter : MonoBehaviour, IDamageable, IDisplaceable {
 
     private void Awake() {
         player_stats = GetComponent<PlayerStats>();
+        on_die_event = new UnityEvent();
     }
 
     private void FixedUpdate() {
@@ -69,6 +72,18 @@ public class PlayerCharacter : MonoBehaviour, IDamageable, IDisplaceable {
     }
 
     public float TakeDamage(float damage) {
-        return stats.health.SubtractResource(damage);
+        float damage_taken = stats.health.SubtractResource(damage);
+        if (stats.health.value <= 0) {
+            Die();
+        }
+        return damage;
+    }
+
+    public void AddDieEvent(UnityAction action) {
+        on_die_event.AddListener(action);
+    }
+
+    void Die() {
+        on_die_event.Invoke();
     }
 }

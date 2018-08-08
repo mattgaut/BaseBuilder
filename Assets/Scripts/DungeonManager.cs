@@ -8,13 +8,14 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
     bool loaded;
 
     [SerializeField] PlayerCharacter character;
-    [SerializeField] VictoryScreenUI end_screen;
+    [SerializeField] VictoryScreenUI victory_screen;
+    [SerializeField] DefeatScreenUI defeat_screen;
 
     Vector2Int entrance_position, exit_position;
     Exit exit;
     Vector2 size;
 
-    [SerializeField]float scale, block_size;
+    [SerializeField] float scale, block_size;
 
     bool level_over;
 
@@ -51,6 +52,7 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
                     piece.position = piece_data.position;
                     piece.facing = piece_data.facing;
                     if (position == exit_position) {
+                        Debug.Log("SetExit");
                         exit = piece.GetComponentInChildren<Exit>();
                     }
                 }
@@ -85,12 +87,14 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
     void Start () {
 		if (!Load(SceneBridge.GetBaseData())) {
             SceneManager.LoadScene(0);
+            return;
         }
-	}
+        character.AddDieEvent(LoseLevel);
+    }
 
     void Update() {
         if (!level_over && exit.player_touching_exit) {
-            EndLevel();
+            WinLevel();
         }
     }
 
@@ -121,7 +125,7 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
         return new_enemy_group;
     }
 
-    void EndLevel() {
+    void WinLevel() {
         level_over = true;
 
         Account account = AccountHolder.account;
@@ -139,6 +143,21 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
         account.inventory.AddGold(gold_gained);
         account.GainExperience(experience_gained);
 
-        end_screen.DisplayScreen(experience_gained, gold_gained, AccountHolder.account);
+        victory_screen.DisplayScreen(experience_gained, gold_gained, AccountHolder.account);
+    }
+
+    void LoseLevel() {
+        level_over = true;
+
+        Account account = AccountHolder.account;
+
+        int experience_gained = 0;
+        foreach (Enemy e in killed_enemies) {
+            experience_gained += e.exp_value;
+        }
+
+        account.GainExperience(experience_gained);
+
+        defeat_screen.DisplayScreen(experience_gained, AccountHolder.account);
     }
 }

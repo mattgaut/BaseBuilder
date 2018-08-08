@@ -34,6 +34,10 @@ public class PlayerCharacter : MonoBehaviour, IDamageable, IDisplaceable {
         }
     }
 
+    public bool dead {
+        get; private set;
+    }
+
     public void UseAbility1() {
         ability_1.TryUse();
     }
@@ -84,6 +88,9 @@ public class PlayerCharacter : MonoBehaviour, IDamageable, IDisplaceable {
     }
 
     void Die() {
-        on_die_event.Invoke();
+        if (!dead) {
+            dead = true;
+            on_die_event.Invoke();
+        }
     }
 }

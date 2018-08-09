@@ -20,6 +20,9 @@ public class BaseBuildUI : MonoBehaviour {
     [SerializeField] RectTransform load_button_holder;
     [SerializeField] Text home_error_text;
 
+    [SerializeField] InputField width, height;
+    [SerializeField] Button set_size_button;
+
     bool right_side_panel_hidden;
     bool paused;
     bool saving, loading, setting_home;
@@ -50,6 +53,8 @@ public class BaseBuildUI : MonoBehaviour {
         confirm_home_button.onClick.AddListener(() => ConfirmHomeBase());
 
         confirm_save_button.onClick.AddListener(() => EndSave(save_field.text));
+
+        set_size_button.onClick.AddListener(() => SetSize());
 
         right_side_panel_hidden = false;
     }
@@ -171,5 +176,18 @@ public class BaseBuildUI : MonoBehaviour {
         loading_screen.SetActive(false);
         loading = false;
         TogglePause();
+    }
+
+    void SetSize() {
+        int x = int.Parse(width.text);
+        int y = int.Parse(height.text);
+
+        if (builder.SetNewSizeAndReload(x, y)) {
+            set_size_button.GetComponentInChildren<Text>().text = "Set Size";
+            width.text = "";
+            height.text = "";
+        } else {
+            set_size_button.GetComponentInChildren<Text>().text = "Not In Range";
+        }
     }
 }

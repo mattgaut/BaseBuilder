@@ -44,6 +44,9 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
     public bool took_input { get; private set; }
     public bool taking_input { get { return place_blocks.selected_piece != null || link.link_waiting || place_enemies.selected_group != null;  } }
 
+    public int max_size { get { return 50; } }
+    public int min_size { get { return 10; } }
+
     [SerializeField] Vector2Int size;
     [SerializeField][Range(1, 10)] int _block_size = 1;
     [SerializeField] int exit_id, entrance_id;
@@ -107,26 +110,11 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         if (data == null) {
             return false;
         }
-        foreach (BasePiece bp in piece_to_anchor.Keys) {
-            Destroy(bp.gameObject);
-        }
-        foreach (EnemyGroup eg in enemy_group_to_anchor.Keys) {
-            Destroy(eg.gameObject);
-        }
-        piece_to_anchor.Clear();
-        point_to_piece.Clear();
-        triggers.Clear();
-        triggerables.Clear();
-        trigger_to_triggerable.Clear();
-        triggerable_to_trigger.Clear();
 
-        enemy_group_to_anchor.Clear();
-        point_to_enemy_group.Clear();
+        ClearMap();
 
         entrance_position = new Vector2Int(data.entrance_x, data.entrance_y);
         exit_position = new Vector2Int(data.exit_x, data.exit_y);
-
-        inventory_tracker.ResetTracking();
 
         size.x = data.width;
         size.y = data.height;
@@ -277,6 +265,27 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         return map_valid;
     }
 
+    public bool SetNewSizeAndReload(int x, int y) {
+        if (x < min_size || x > max_size) {
+            return false;
+        }
+        if (x < min_size || x > max_size) {
+            return false;
+        }
+
+        if (!free_build) {
+            // Check if size is less than account max size
+        }
+
+        ClearMap();
+
+        size = new Vector2Int(x, y);
+
+        CreateBorderWall();
+
+        return true;
+    }
+
     void Awake() {
         mask = LayerMask.GetMask("MousePlane");
         point_to_piece = new Dictionary<Vector2Int, BasePiece>();
@@ -340,6 +349,29 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
     }
     void LateUpdate() {
         took_input = taking_input;
+    }
+
+    void ClearMap() {
+        foreach (BasePiece bp in piece_to_anchor.Keys) {
+            Destroy(bp.gameObject);
+        }
+        foreach (EnemyGroup eg in enemy_group_to_anchor.Keys) {
+            Destroy(eg.gameObject);
+        }
+        piece_to_anchor.Clear();
+        point_to_piece.Clear();
+        triggers.Clear();
+        triggerables.Clear();
+        trigger_to_triggerable.Clear();
+        triggerable_to_trigger.Clear();
+
+        enemy_group_to_anchor.Clear();
+        point_to_enemy_group.Clear();
+
+        entrance_position = Vector2Int.zero;
+        exit_position = Vector2Int.zero;
+
+        inventory_tracker.ResetTracking();
     }
 
     void CreateBorderWall() {

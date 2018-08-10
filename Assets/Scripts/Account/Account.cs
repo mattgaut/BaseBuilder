@@ -18,6 +18,8 @@ public class Account : MonoBehaviour {
     public int experience { get; private set; }
     public int experience_to_next_level { get { return level * 100; } }
 
+    public int max_base_size { get; private set; }
+
     public void SetShopData(ShopData data) {
         shop = data;
     }
@@ -31,6 +33,8 @@ public class Account : MonoBehaviour {
 
         experience = data.experience;
         level = data.level;
+
+        max_base_size = data.max_base_size;
     }
 
     public AccountData Save() {
@@ -71,6 +75,8 @@ public class AccountData {
     public int experience;
     public int level;
 
+    public int max_base_size;
+
     public AccountData(string account_name) {
         this.account_name = account_name;
         level = 1;
@@ -84,5 +90,7 @@ public class AccountData {
 
         level = account.level;
         experience = account.experience;
+
+        max_base_size = account.max_base_size;
     }
 }

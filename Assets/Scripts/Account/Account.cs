@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Inventory))]
+[RequireComponent(typeof(Inventory), typeof(Skills))]
 public class Account : MonoBehaviour {
 
     public string account_name { get; private set; }
 
     public Inventory inventory { get; private set; }
     public BaseInventory base_inventory { get { return inventory.base_inventory; } }
+    public Skills skills { get; private set; }
 
     public bool account_loaded { get; private set; }
     public BaseData home_base { get; private set; }
@@ -35,6 +36,8 @@ public class Account : MonoBehaviour {
         level = data.level;
 
         max_base_size = data.max_base_size;
+
+        skills.LoadSkills(data.skills);
     }
 
     public AccountData Save() {
@@ -53,15 +56,22 @@ public class Account : MonoBehaviour {
         if (amount > 0) {
             experience += amount;
             while (experience > experience_to_next_level) {
-                experience -= experience_to_next_level;
-                level += 1;
+                LevelUp();
             }
         }
     }
 
     private void Awake() {
         inventory = GetComponent<Inventory>();
+        skills = GetComponent<Skills>();
         account_loaded = false;
+    }
+
+    void LevelUp() {
+        experience -= experience_to_next_level;
+        level += 1;
+
+        skills.GainSkillPoint();
     }
 }
 
@@ -71,6 +81,8 @@ public class AccountData {
     public InventoryData inventory_data;
     public BaseData home_base;
     public ShopData shop;
+
+    public SkillsData skills;
 
     public int experience;
     public int level;
@@ -92,5 +104,7 @@ public class AccountData {
         experience = account.experience;
 
         max_base_size = account.max_base_size;
+
+        skills = account.skills.SaveSkills();
     }
 }

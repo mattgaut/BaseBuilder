@@ -52,7 +52,6 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
                     piece.position = piece_data.position;
                     piece.facing = piece_data.facing;
                     if (position == exit_position) {
-                        Debug.Log("SetExit");
                         exit = piece.GetComponentInChildren<Exit>();
                     }
                 }

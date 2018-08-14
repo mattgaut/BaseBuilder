@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Skills : MonoBehaviour {
+public class SkillTree : MonoBehaviour {
 
     public int skill_points { get; private set; }
 
@@ -30,7 +30,7 @@ public class Skills : MonoBehaviour {
 public class SkillsData {
     public int skill_points;
 
-    public SkillsData(Skills s) {
+    public SkillsData(SkillTree s) {
         skill_points = s.skill_points;
     }
     public SkillsData() {

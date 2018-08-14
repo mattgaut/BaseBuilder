@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Inventory), typeof(Skills))]
+[RequireComponent(typeof(Inventory), typeof(SkillTree))]
 public class Account : MonoBehaviour {
 
     public string account_name { get; private set; }
 
     public Inventory inventory { get; private set; }
     public BaseInventory base_inventory { get { return inventory.base_inventory; } }
-    public Skills skills { get; private set; }
+    public SkillTree skills { get; private set; }
 
     public bool account_loaded { get; private set; }
     public BaseData home_base { get; private set; }
@@ -63,7 +63,7 @@ public class Account : MonoBehaviour {
 
     private void Awake() {
         inventory = GetComponent<Inventory>();
-        skills = GetComponent<Skills>();
+        skills = GetComponent<SkillTree>();
         account_loaded = false;
     }
 

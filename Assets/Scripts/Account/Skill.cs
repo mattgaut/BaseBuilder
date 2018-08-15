@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Skills", menuName = "Skills", order = 1)]
-public class Skill : ScriptableObject {
+public class Skill {
 
     public string skill_name { get { return _skill_name; } }
     public int level { get; private set; }

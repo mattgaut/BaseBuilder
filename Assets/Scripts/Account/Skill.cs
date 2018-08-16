@@ -41,7 +41,9 @@ public abstract class Skill : MonoBehaviour {
 
     public bool TryLevelSkill(int total_system_points) {
         if (CanLevel(total_system_points)) {
+            BeforeLevelUp();
             level += 1;
+            AfterLevelUp();
             return true;
         }
         return false;
@@ -49,5 +51,12 @@ public abstract class Skill : MonoBehaviour {
 
     public void SetParentSkill(Skill parent) {
         _parent = parent;
+    }
+
+    protected virtual void BeforeLevelUp() {
+
+    }
+    protected virtual void AfterLevelUp() {
+
     }
 }

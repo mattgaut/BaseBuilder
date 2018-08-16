@@ -8,7 +8,7 @@ public abstract class AccountSkill : Skill {
 
     protected Account applied_to;
 
-    public void Apply(Account account) {
+    public void Initialize(Account account) {
         if (applied_to != null) {
             RemoveEffects();
         }
@@ -19,5 +19,17 @@ public abstract class AccountSkill : Skill {
     protected abstract void ApplyEffects();
 
     protected abstract void RemoveEffects();
+
+    protected override void BeforeLevelUp() {
+        if (applied_to != null) {
+            RemoveEffects();
+        }
+    }
+
+    protected override void AfterLevelUp() {
+        if (applied_to != null) {
+            ApplyEffects();
+        }
+    }
 
 }

@@ -6,5 +6,5 @@ public abstract class CharacterSkill : Skill {
 
     public override Type type { get { return Type.Character; } }
 
-    public abstract void Apply(PlayerCharacter character);
+    public abstract void Initialize(PlayerCharacter character);
 }

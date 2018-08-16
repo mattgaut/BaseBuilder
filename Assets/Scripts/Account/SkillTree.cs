@@ -33,18 +33,18 @@ public class SkillTree : MonoBehaviour {
         return new List<Skill>(skills);
     }
     
-    public void ApplySkills(Account account) {
+    public void InitializeSkills(Account account) {
         foreach (Skill s in skills) {
             if (s.type == Skill.Type.Account) {
-                (s as AccountSkill).Apply(account);
+                (s as AccountSkill).Initialize(account);
             }
         }
     }
 
-    public void ApplySkills(PlayerCharacter character) {
+    public void InitializeSkills(PlayerCharacter character) {
         foreach (Skill s in skills) {
             if (s.type == Skill.Type.Account) {
-                (s as CharacterSkill).Apply(character);
+                (s as CharacterSkill).Initialize(character);
             }
         }
     }

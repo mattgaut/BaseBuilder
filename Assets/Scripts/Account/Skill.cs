@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Skill : MonoBehaviour {
+public abstract class Skill : ScriptableObject {
 
     public enum Type { None, Character, Account }
 
@@ -41,22 +41,39 @@ public abstract class Skill : MonoBehaviour {
 
     public bool TryLevelSkill(int total_system_points) {
         if (CanLevel(total_system_points)) {
-            BeforeLevelUp();
+            BeforeChangeLevel();
             level += 1;
-            AfterLevelUp();
+            AfterChangeLevel();
             return true;
         }
         return false;
+    }
+
+    public void Reset() {
+        OnReset();
+        level = 0;
+    }
+
+    public void LoadLevel(int i) {
+        if (i <= max_level && i >=0) {
+            BeforeChangeLevel();
+            level = i;
+            AfterChangeLevel();
+        }
+    }
+
+    protected virtual void OnReset() {
+
     }
 
     public void SetParentSkill(Skill parent) {
         _parent = parent;
     }
 
-    protected virtual void BeforeLevelUp() {
+    protected virtual void BeforeChangeLevel() {
 
     }
-    protected virtual void AfterLevelUp() {
+    protected virtual void AfterChangeLevel() {
 
     }
 }

@@ -27,6 +27,15 @@ public class SkillTree : MonoBehaviour {
 
     public void LoadSkills(SkillsData data) {
         total_skill_points = data.skill_points;
+        spent_skill_points = 0;
+        int i = 0;
+        for (; i < skills.Count && i < data.skill_levels.Length; i++) {
+            skills[i].LoadLevel(data.skill_levels[i]);
+            spent_skill_points += data.skill_levels[i];
+        }
+        for (; i < skills.Count; i++) {
+            skills[i].LoadLevel(0);
+        }
     }
 
     public List<Skill> GetSkillList() {
@@ -60,16 +69,31 @@ public class SkillTree : MonoBehaviour {
             return false;
         }
     }
+
+    public void ResetSkills() {
+        foreach (Skill skill in skills) {
+            skill.Reset();
+        }
+    }
 }
 
 [System.Serializable]
 public class SkillsData {
     public int skill_points;
+    public int[] skill_levels;
 
     public SkillsData(SkillTree s) {
         skill_points = s.total_skill_points;
+
+        List<Skill> skills = s.GetSkillList();
+        skill_levels = new int[skills.Count]; 
+        for (int i = 0; i < skills.Count; i++) {
+            skill_levels[i] = skills[i].level;
+        }
+
     }
     public SkillsData() {
         skill_points = 0;
+        skill_levels = new int[0];
     }
 }

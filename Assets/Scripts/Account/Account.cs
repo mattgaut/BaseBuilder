@@ -9,7 +9,7 @@ public class Account : MonoBehaviour {
 
     public Inventory inventory { get; private set; }
     public BaseInventory base_inventory { get { return inventory.base_inventory; } }
-    public SkillTree skills { get; private set; }
+    public SkillTree skill_tree { get; private set; }
 
     public bool account_loaded { get; private set; }
     public BaseData home_base { get; private set; }
@@ -37,7 +37,8 @@ public class Account : MonoBehaviour {
 
         max_base_size = data.max_base_size;
 
-        skills.LoadSkills(data.skills);
+        skill_tree.ResetSkills();
+        skill_tree.LoadSkills(data.skills);
     }
 
     public AccountData Save() {
@@ -63,7 +64,7 @@ public class Account : MonoBehaviour {
 
     private void Awake() {
         inventory = GetComponent<Inventory>();
-        skills = GetComponent<SkillTree>();
+        skill_tree = GetComponent<SkillTree>();
         account_loaded = false;
     }
 
@@ -71,7 +72,7 @@ public class Account : MonoBehaviour {
         experience -= experience_to_next_level;
         level += 1;
 
-        skills.GainSkillPoint();
+        skill_tree.GainSkillPoint();
     }
 }
 
@@ -105,6 +106,6 @@ public class AccountData {
 
         max_base_size = account.max_base_size;
 
-        skills = account.skills.SaveSkills();
+        skills = account.skill_tree.SaveSkills();
     }
 }

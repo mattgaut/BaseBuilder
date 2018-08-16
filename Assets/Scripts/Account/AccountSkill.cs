@@ -20,16 +20,21 @@ public abstract class AccountSkill : Skill {
 
     protected abstract void RemoveEffects();
 
-    protected override void BeforeLevelUp() {
+    protected override void BeforeChangeLevel() {
         if (applied_to != null) {
             RemoveEffects();
         }
     }
 
-    protected override void AfterLevelUp() {
+    protected override void AfterChangeLevel() {
         if (applied_to != null) {
             ApplyEffects();
         }
+    }
+
+    protected override void OnReset() {
+        RemoveEffects();
+        applied_to = null;
     }
 
 }

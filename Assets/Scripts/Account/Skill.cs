@@ -9,7 +9,7 @@ public abstract class Skill : ScriptableObject {
     public virtual Type type { get { return Type.None; } }
 
     public string skill_name { get { return _skill_name; } }
-    public int id { get; private set; }
+    public int id { get { return _id; } }
     public string description { get { return _description; } }
     public int level { get; private set; }
     public int max_level { get { return _max_level; } }

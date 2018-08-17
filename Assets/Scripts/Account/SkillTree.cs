@@ -82,6 +82,7 @@ public class SkillTree : MonoBehaviour {
     private void Awake() {
         skills_by_id = new Dictionary<int, Skill>();
         foreach (Skill skill in skills) {
+            Debug.Log(skill.name + " : " + skill.id);
             skills_by_id.Add(skill.id, skill);
         }
     }
@@ -102,7 +103,7 @@ public class SkillsData {
                 max_id = skill.id;
             }
         }
-        skill_levels = new int[max_id]; 
+        skill_levels = new int[max_id + 1]; 
         for (int i = 0; i < skills.Count; i++) {
             skill_levels[skills[i].id] = skills[i].level;
         }

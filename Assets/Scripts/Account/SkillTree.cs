@@ -33,6 +33,7 @@ public class SkillTree : MonoBehaviour {
         for (int i = 0; i < data.skill_levels.Length; i++) {
             if (skills_by_id.ContainsKey(i)) {
                 skills_by_id[i].LoadLevel(data.skill_levels[i]);
+                spent_skill_points += data.skill_levels[i];
             }
         }
     }

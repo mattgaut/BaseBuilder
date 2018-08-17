@@ -51,6 +51,7 @@ public class AccountMenu : MonoBehaviour {
         data.shop = new ShopData();
         data.max_base_size = 20;
         data.skills = new SkillsData();
+        data.skills.skill_points = 10;
 
         Directory.CreateDirectory(Application.persistentDataPath + "/Accounts/");
         if (File.Exists(Application.persistentDataPath + "/Accounts/" + data.account_name + ".ai")) {

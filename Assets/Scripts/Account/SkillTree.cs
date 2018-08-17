@@ -9,6 +9,7 @@ public class SkillTree : MonoBehaviour {
     public int available_skill_points { get { return total_skill_points - spent_skill_points; } }
 
     [SerializeField] List<Skill> skills;
+    Dictionary<int, Skill> skills_by_id;
 
     public void GainSkillPoint() {
         GainSkillPoints(1);
@@ -28,14 +29,16 @@ public class SkillTree : MonoBehaviour {
     public void LoadSkills(SkillsData data) {
         total_skill_points = data.skill_points;
         spent_skill_points = 0;
-        int i = 0;
-        for (; i < skills.Count && i < data.skill_levels.Length; i++) {
-            skills[i].LoadLevel(data.skill_levels[i]);
-            spent_skill_points += data.skill_levels[i];
+
+        for (int i = 0; i < data.skill_levels.Length; i++) {
+            if (skills_by_id.ContainsKey(i)) {
+                skills_by_id[i].LoadLevel(data.skill_levels[i]);
+            }
         }
-        for (; i < skills.Count; i++) {
-            skills[i].LoadLevel(0);
-        }
+    }
+
+    public Skill GetSkill(int id) {
+        return skills_by_id[id];
     }
 
     public List<Skill> GetSkillList() {
@@ -75,6 +78,13 @@ public class SkillTree : MonoBehaviour {
             skill.Reset();
         }
     }
+
+    private void Awake() {
+        skills_by_id = new Dictionary<int, Skill>();
+        foreach (Skill skill in skills) {
+            skills_by_id.Add(skill.id, skill);
+        }
+    }
 }
 
 [System.Serializable]
@@ -86,11 +96,16 @@ public class SkillsData {
         skill_points = s.total_skill_points;
 
         List<Skill> skills = s.GetSkillList();
-        skill_levels = new int[skills.Count]; 
-        for (int i = 0; i < skills.Count; i++) {
-            skill_levels[i] = skills[i].level;
+        int max_id = 0;
+        foreach (Skill skill in skills) {
+            if (skill.id > max_id) {
+                max_id = skill.id;
+            }
         }
-
+        skill_levels = new int[max_id]; 
+        for (int i = 0; i < skills.Count; i++) {
+            skill_levels[skills[i].id] = skills[i].level;
+        }
     }
     public SkillsData() {
         skill_points = 0;

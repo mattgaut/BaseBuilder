@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class CooldownAbility : Ability {
 
     public float cooldown {
-        get { return _cooldown; }
+        get { return _cooldown * (1 - controller.player_stats.cooldown_reduction); }
     }
     public float remaining_cooldown {
         get; private set;
@@ -42,7 +42,7 @@ public abstract class CooldownAbility : Ability {
     protected abstract void PerformAbility();
 
     protected void StartCooldown() {
-        remaining_cooldown = _cooldown * (1 - controller.player_stats.cooldown_reduction);
+        remaining_cooldown = cooldown;
         on_cooldown = true;
     }
     protected virtual void OnSuccessfulUse() {

@@ -18,6 +18,6 @@ public class CooldownAbilityDisplay : MonoBehaviour {
         } else {
             slider.SetTextEnabled(true);
         }
-        slider.SetFillCustomText(ability.remaining_cooldown/ability.cooldown, ability.remaining_cooldown.ToString("F1") + "s");
+        slider.SetFillCustomText(ability.remaining_cooldown/(ability.cooldown), ability.remaining_cooldown.ToString("F1") + "s");
     }
 }

@@ -83,7 +83,6 @@ public class SkillTree : MonoBehaviour {
     private void Awake() {
         skills_by_id = new Dictionary<int, Skill>();
         foreach (Skill skill in skills) {
-            Debug.Log(skill.name + " : " + skill.id);
             skills_by_id.Add(skill.id, skill);
         }
     }

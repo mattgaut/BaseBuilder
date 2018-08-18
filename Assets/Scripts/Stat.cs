@@ -17,7 +17,7 @@ public class Stat {
     }
 
     public virtual float value {
-        get { Debug.Log(multiplier_buff); return (_base_value + _flat_buff) * multiplier_buff; }
+        get { return (_base_value + _flat_buff) * multiplier_buff; }
     }
 
     public float base_value {

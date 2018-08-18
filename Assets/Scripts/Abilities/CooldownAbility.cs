@@ -15,6 +15,7 @@ public abstract class CooldownAbility : Ability {
     }
 
     [SerializeField] float _cooldown;
+    [SerializeField] PlayerCharacter controller;
 
     protected override void OnAwake() {
         base.OnAwake();

@@ -54,7 +54,6 @@ public class Stat {
     public static implicit operator float(Stat s) {
         return s.value;
     } 
-
 }
 
 [System.Serializable]

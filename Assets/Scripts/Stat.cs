@@ -7,6 +7,9 @@ public class Stat {
 
     [SerializeField] protected float _base_value;
 
+    protected float _multiplier_buff = 1;
+    protected float _flat_buff = 0;
+
     public Stat(float base_value) {
         _base_value = base_value;
     }
@@ -18,6 +21,36 @@ public class Stat {
     public float base_value {
         get { return _base_value; }
     }
+
+    public float multiplier_buff {
+        get { return _multiplier_buff; }
+    }
+    public float flat_buff {
+        get { return _flat_buff; }
+    }
+
+    public void ApplyFlatBuff(float flat_buff) {
+        _flat_buff += flat_buff;
+    }
+    public void ApplyMultiplierBuff(float mult_buff) {
+        _multiplier_buff *= mult_buff;
+    }
+    public void ApplyBuff(float flat_buff, float mult_buff) {
+        _multiplier_buff *= mult_buff;
+        _flat_buff += flat_buff;
+    }
+
+    public void RemoveFlatBuff(float flat_buff) {
+        _flat_buff -= flat_buff;
+    }
+    public void RemoveMultiplierBuff(float mult_buff) {
+        _multiplier_buff /= mult_buff;
+    }
+    public void RemoveBuff(float flat_buff, float mult_buff) {
+        _multiplier_buff /= mult_buff;
+        _flat_buff -= flat_buff;
+    }
+
 
     public static implicit operator float(Stat s) {
         return s.value;

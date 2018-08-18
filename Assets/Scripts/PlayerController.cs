@@ -77,14 +77,11 @@ public class PlayerController : MonoBehaviour {
         body.velocity = Vector3.zero;
         Vector3 movement;
         if (!character.displaced) {
-            Debug.Log("Horizontal : " + horizontal + " : Vertical : " + vertical);
             movement = (new Vector3(horizontal, 0, vertical) * character.player_stats.speed * Time.deltaTime);
-            Debug.Log("0. " + movement);
             movement = current_rotation * movement;
         } else {
             movement = (character.displacement * Time.deltaTime);
         }
-        Debug.Log("1. " + movement);
         RaycastHit hit;
         if (Physics.Raycast(body.position, movement, out hit, movement.magnitude + body_width, walking_collision_mask)) {
             movement = hit.point - body.position;
@@ -92,7 +89,6 @@ public class PlayerController : MonoBehaviour {
             movement *= (movement.magnitude - body_width);
         }
 
-        Debug.Log("2. " + movement);
         body.MovePosition(body.position + movement);
     }
 

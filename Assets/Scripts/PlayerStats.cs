@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour, IStats {
     [SerializeField] ResourceStat _health;
-    [SerializeField] Stat _speed, _strength, _intelligence, _dexterity, _vitality;
+    [SerializeField] Stat _speed, _strength, _intelligence, _dexterity, _vitality, _cooldown_reduction;
 
     public ResourceStat health {
         get { return _health; }
@@ -14,6 +14,7 @@ public class PlayerStats : MonoBehaviour, IStats {
     public Stat intelligence { get { return _intelligence; } }
     public Stat dexterity { get { return _dexterity; } }
     public Stat vitality { get { return _vitality; } }
+    public Stat cooldown_reduction { get { return _cooldown_reduction; } }
 
     void Awake() {
         _health.Init();

@@ -42,7 +42,7 @@ public abstract class CooldownAbility : Ability {
     protected abstract void PerformAbility();
 
     protected void StartCooldown() {
-        remaining_cooldown = _cooldown;
+        remaining_cooldown = _cooldown * (1 - controller.player_stats.cooldown_reduction);
         on_cooldown = true;
     }
     protected virtual void OnSuccessfulUse() {

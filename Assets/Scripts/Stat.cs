@@ -15,7 +15,7 @@ public class Stat {
     }
 
     public virtual float value {
-        get { return _base_value; }
+        get { return (_base_value + _flat_buff) * _multiplier_buff; }
     }
 
     public float base_value {
@@ -30,27 +30,26 @@ public class Stat {
     }
 
     public void ApplyFlatBuff(float flat_buff) {
-        _flat_buff += flat_buff;
+        ApplyBuff(flat_buff, 0);
     }
     public void ApplyMultiplierBuff(float mult_buff) {
-        _multiplier_buff *= mult_buff;
+        ApplyBuff(0, flat_buff);
     }
-    public void ApplyBuff(float flat_buff, float mult_buff) {
+    public virtual void ApplyBuff(float flat_buff, float mult_buff) {
         _multiplier_buff *= mult_buff;
         _flat_buff += flat_buff;
     }
 
     public void RemoveFlatBuff(float flat_buff) {
-        _flat_buff -= flat_buff;
+        RemoveBuff(flat_buff, 0);
     }
     public void RemoveMultiplierBuff(float mult_buff) {
-        _multiplier_buff /= mult_buff;
+        RemoveBuff(0, mult_buff);
     }
-    public void RemoveBuff(float flat_buff, float mult_buff) {
+    public virtual void RemoveBuff(float flat_buff, float mult_buff) {
         _multiplier_buff /= mult_buff;
         _flat_buff -= flat_buff;
     }
-
 
     public static implicit operator float(Stat s) {
         return s.value;
@@ -83,6 +82,21 @@ public class ResourceStat : Stat {
         return old - resource_value;
     }
 
+    public override void ApplyBuff(float flat_buff, float mult_buff) {
+        float old_max = max_value;
+        base.ApplyBuff(flat_buff, mult_buff);
+        if (max_value < resource_value) {
+            resource_value = max_value;
+        }
+        if (max_value > old_max) {
+            resource_value += max_value - old_max;
+        }
+    }
+
+    public override void RemoveBuff(float flat_buff, float mult_buff) {
+        base.RemoveBuff(flat_buff, mult_buff);
+    }
+
     public override float value {
         get {
             return _resource_value;
@@ -91,7 +105,7 @@ public class ResourceStat : Stat {
 
     public float max_value {
         get {
-            { return base_value; }
+            { return (base_value + flat_buff) * multiplier_buff; }
         }
     }
 

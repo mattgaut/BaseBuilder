@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerStats : MonoBehaviour, IStats {
+
     [SerializeField] ResourceStat _health;
     [SerializeField] Stat _speed, _strength, _intelligence, _dexterity, _vitality, _cooldown_reduction;
 

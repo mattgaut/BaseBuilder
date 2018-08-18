@@ -7,15 +7,17 @@ public class Stat {
 
     [SerializeField] protected float _base_value;
 
-    protected float _multiplier_buff = 1;
-    protected float _flat_buff = 0;
+    protected float _multiplier_buff;
+    protected float _flat_buff;
 
     public Stat(float base_value) {
         _base_value = base_value;
+        _multiplier_buff = 1f;
+        _flat_buff = 0f;
     }
 
     public virtual float value {
-        get { return (_base_value + _flat_buff) * _multiplier_buff; }
+        get { Debug.Log(multiplier_buff); return (_base_value + _flat_buff) * multiplier_buff; }
     }
 
     public float base_value {
@@ -23,7 +25,8 @@ public class Stat {
     }
 
     public float multiplier_buff {
-        get { return _multiplier_buff; }
+        get { return 1 + _multiplier_buff; }
+        set { _multiplier_buff = value - 1; }
     }
     public float flat_buff {
         get { return _flat_buff; }
@@ -36,7 +39,7 @@ public class Stat {
         ApplyBuff(0, flat_buff);
     }
     public virtual void ApplyBuff(float flat_buff, float mult_buff) {
-        _multiplier_buff *= mult_buff;
+        multiplier_buff *=  (1 + mult_buff);
         _flat_buff += flat_buff;
     }
 
@@ -47,13 +50,13 @@ public class Stat {
         RemoveBuff(0, mult_buff);
     }
     public virtual void RemoveBuff(float flat_buff, float mult_buff) {
-        _multiplier_buff /= mult_buff;
+        multiplier_buff /= (1 + mult_buff);
         _flat_buff -= flat_buff;
     }
 
     public static implicit operator float(Stat s) {
         return s.value;
-    } 
+    }
 }
 
 [System.Serializable]

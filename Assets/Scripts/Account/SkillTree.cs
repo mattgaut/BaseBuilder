@@ -56,7 +56,7 @@ public class SkillTree : MonoBehaviour {
 
     public void InitializeSkills(PlayerCharacter character) {
         foreach (Skill s in skills) {
-            if (s.type == Skill.Type.Account) {
+            if (s.type == Skill.Type.Character) {
                 (s as CharacterSkill).Initialize(character);
             }
         }

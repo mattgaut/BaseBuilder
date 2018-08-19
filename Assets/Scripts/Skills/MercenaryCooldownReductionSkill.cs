@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "CDRSkill", menuName = "Skills/CDRSkill", order = 2)]
 public class CharacterCooldownReductionSkill : CharacterSkill {
 
+    [SerializeField] float[] buff_at_level;
 
-    public override void Initialize(PlayerCharacter character) {
-        c
-        throw new System.NotImplementedException();
+    protected override void Initialize() {
+        float buff_value = 0;
+        if (level <= buff_at_level.Length) {
+            buff_value = buff_at_level[level - 1];
+        }
+        character.player_stats.cooldown_reduction.ApplyMultiplierBuff(buff_value);
     }
-
-    void Start () {
-		
-	}
-	void Update () {
-		
-	}
 }

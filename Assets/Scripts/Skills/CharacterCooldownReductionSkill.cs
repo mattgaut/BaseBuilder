@@ -12,6 +12,6 @@ public class CharacterCooldownReductionSkill : CharacterSkill {
         if (level <= buff_at_level.Length) {
             buff_value = buff_at_level[level - 1];
         }
-        character.player_stats.cooldown_reduction.ApplyMultiplierBuff(buff_value);
+        character.player_stats.cooldown_reduction.ApplyFlatBuff(buff_value);
     }
 }

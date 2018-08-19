@@ -10,5 +10,11 @@ public abstract class CharacterSkill : Skill {
 
     public void Initialize(PlayerCharacter character) {
         this.character = character;
+        if (level <= 0) {
+            return;
+        }
+        Initialize();
     }
+
+    protected abstract void Initialize();
 }

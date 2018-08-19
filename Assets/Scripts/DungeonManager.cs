@@ -88,6 +88,9 @@ public class DungeonManager : MonoBehaviour, IBaseLoad {
             SceneManager.LoadScene(0);
             return;
         }
+        if (AccountHolder.has_valid_account) {
+            AccountHolder.account.skill_tree.InitializeSkills(character);
+        }
         character.AddDieEvent(LoseLevel);
     }
 

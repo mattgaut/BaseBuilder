@@ -42,6 +42,7 @@ public class Account : MonoBehaviour {
 
         skill_tree.ResetSkills();
         skill_tree.LoadSkills(data.skills);
+        skill_tree.InitializeSkills(this);
     }
 
     public AccountData Save() {

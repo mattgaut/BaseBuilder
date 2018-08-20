@@ -19,7 +19,10 @@ public class Account : MonoBehaviour {
     public int experience { get; private set; }
     public int experience_to_next_level { get { return level * 100; } }
 
-    public int max_base_size { get; private set; }
+    public int base_size { get; private set; }
+    public int bonus_base_size { get; private set; }
+    public int total_base_size { get { return bonus_base_size > 0 ? bonus_base_size + base_size : base_size; } }
+
 
     public void SetShopData(ShopData data) {
         shop = data;
@@ -35,7 +38,7 @@ public class Account : MonoBehaviour {
         experience = data.experience;
         level = data.level;
 
-        max_base_size = data.max_base_size;
+        base_size = data.base_size;
 
         skill_tree.ResetSkills();
         skill_tree.LoadSkills(data.skills);
@@ -60,6 +63,10 @@ public class Account : MonoBehaviour {
                 LevelUp();
             }
         }
+    }
+
+    public void AddBonusBaseSize(int to_add) {
+        bonus_base_size += to_add;
     }
 
     private void Awake() {
@@ -88,7 +95,7 @@ public class AccountData {
     public int experience;
     public int level;
 
-    public int max_base_size;
+    public int base_size;
 
     public AccountData(string account_name) {
         this.account_name = account_name;
@@ -104,7 +111,7 @@ public class AccountData {
         level = account.level;
         experience = account.experience;
 
-        max_base_size = account.max_base_size;
+        base_size = account.max_base_size;
 
         skills = account.skill_tree.SaveSkills();
     }

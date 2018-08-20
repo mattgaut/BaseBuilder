@@ -111,7 +111,7 @@ public class AccountData {
         level = account.level;
         experience = account.experience;
 
-        base_size = account.max_base_size;
+        base_size = account.base_size;
 
         skills = account.skill_tree.SaveSkills();
     }

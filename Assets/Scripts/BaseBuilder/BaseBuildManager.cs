@@ -274,7 +274,7 @@ public class BaseBuildManager : MonoBehaviour, IBaseSaveLoad {
         }
 
         if (!free_build) {
-            if (x > AccountHolder.account.max_base_size || y > AccountHolder.account.max_base_size) {
+            if (x > AccountHolder.account.total_base_size || y > AccountHolder.account.total_base_size) {
                 return false;
             }
         }

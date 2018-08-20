@@ -9,7 +9,7 @@ public class IncreaseBaseSize : AccountSkill {
 
     protected override void ApplyEffects() {
         int bonus_base_size = 0;
-        if (base_size_bonus_at_level.Length < level) {
+        if (base_size_bonus_at_level.Length >= level) {
              bonus_base_size = base_size_bonus_at_level[level - 1];
         }
         applied_to.AddBonusBaseSize(bonus_base_size);
@@ -17,7 +17,7 @@ public class IncreaseBaseSize : AccountSkill {
 
     protected override void RemoveEffects() {
         int bonus_base_size = 0;
-        if (base_size_bonus_at_level.Length < level) {
+        if (base_size_bonus_at_level.Length >= level) {
             bonus_base_size = base_size_bonus_at_level[level - 1];
         }
         applied_to.AddBonusBaseSize(-bonus_base_size);

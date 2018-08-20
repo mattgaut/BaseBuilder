@@ -13,7 +13,9 @@ public abstract class AccountSkill : Skill {
             RemoveEffects();
         }
         applied_to = account;
-        ApplyEffects();
+        if (account != null) {
+            ApplyEffects();
+        }
     }
 
     protected abstract void ApplyEffects();
@@ -33,7 +35,9 @@ public abstract class AccountSkill : Skill {
     }
 
     protected override void OnReset() {
-        RemoveEffects();
+        if (applied_to != null) {
+            RemoveEffects();
+        }
         applied_to = null;
     }
 

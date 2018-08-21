@@ -60,6 +60,11 @@ public class Stat {
 }
 
 [System.Serializable]
+public class CappedStat {
+
+}
+
+[System.Serializable]
 public class ResourceStat : Stat {
 
     protected float _resource_value;

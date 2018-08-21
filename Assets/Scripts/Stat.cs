@@ -7,8 +7,12 @@ public class Stat {
 
     [SerializeField] protected float _base_value;
 
+    [SerializeField] protected float lower_cap, upper_cap;
+    [SerializeField] protected bool has_lower_cap, has_upper_cap;
+
     protected float _multiplier_buff;
     protected float _flat_buff;
+
 
     public Stat(float base_value) {
         _base_value = base_value;
@@ -16,8 +20,22 @@ public class Stat {
         _flat_buff = 0f;
     }
 
-    public virtual float value {
-        get { return (_base_value + _flat_buff) * multiplier_buff; }
+    public Stat(float base_value, float lower_cap, float upper_cap) : this(base_value) {
+        this.lower_cap = lower_cap;
+        has_lower_cap = true;
+
+        this.upper_cap = upper_cap;
+        has_upper_cap = true;
+    }
+
+    public Stat(float base_value, float cap, bool is_upper_cap) : this(base_value) {
+        if (is_upper_cap) {
+            upper_cap = cap;
+            has_upper_cap = true;
+        } else {
+            lower_cap = cap;
+            has_lower_cap = true;
+        }
     }
 
     public float base_value {
@@ -57,11 +75,6 @@ public class Stat {
     public static implicit operator float(Stat s) {
         return s.value;
     }
-}
-
-[System.Serializable]
-public class CappedStat {
-
 }
 
 [System.Serializable]

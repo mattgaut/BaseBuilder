@@ -38,6 +38,19 @@ public class Stat {
         }
     }
 
+    public virtual float value {
+        get {
+            float to_return = (_base_value + _flat_buff) * multiplier_buff;
+            if (has_upper_cap) {
+                to_return = Mathf.Min(to_return, upper_cap);
+            }
+            if (has_lower_cap) {
+                to_return = Mathf.Max(lower_cap, to_return);
+            }
+            return to_return;
+        }
+    }
+
     public float base_value {
         get { return _base_value; }
     }

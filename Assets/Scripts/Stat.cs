@@ -138,7 +138,14 @@ public class ResourceStat : Stat {
 
     public float max_value {
         get {
-            return (base_value + flat_buff) * multiplier_buff;
+            float to_return = (_base_value + _flat_buff) * multiplier_buff;
+            if (has_upper_cap) {
+                to_return = Mathf.Min(to_return, upper_cap);
+            }
+            if (has_lower_cap) {
+                to_return = Mathf.Max(lower_cap, to_return);
+            }
+            return to_return;
         }
     }
 

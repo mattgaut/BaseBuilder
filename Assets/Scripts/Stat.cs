@@ -138,7 +138,7 @@ public class ResourceStat : Stat {
 
     public float max_value {
         get {
-            { return (base_value + flat_buff) * multiplier_buff; }
+            return (base_value + flat_buff) * multiplier_buff;
         }
     }
 
